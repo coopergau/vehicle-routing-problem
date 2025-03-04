@@ -4,3 +4,5 @@ project(vrp)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(vrp src/main.cpp)
+
+target_link_libraries(vrp sfml-graphics sfml-window sfml-system)
