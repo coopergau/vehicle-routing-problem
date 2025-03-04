@@ -5,11 +5,7 @@
 #include <thread>
 #include <chrono>
 
-// Struct representing the position of a point that would be a drop off location.
-struct Point
-{
-    double x, y;
-};
+#include "point.h"
 
 // Function generates random points within a given area range.
 std::vector<Point> getRandomPoints(int numPoints, double minDistance, double maxDistance)
@@ -30,7 +26,10 @@ std::vector<Point> getRandomPoints(int numPoints, double minDistance, double max
     return points;
 }
 
-void visualiseVrp(sf::RenderWindow &window, std::vector<Point> &customers, std::vector<Point> &warehouses)
+void visualiseVrp(sf::RenderWindow &window,
+                  const std::vector<Point> &customers,
+                  const std::vector<Point> &warehouses,
+                  const std::vector<std::vector<Point>> &routes)
 {
     // Blue nodes are customers, red nodes are warehouses
     sf::CircleShape blueNode(5);
@@ -38,12 +37,23 @@ void visualiseVrp(sf::RenderWindow &window, std::vector<Point> &customers, std::
     sf::CircleShape redNode(5);
     redNode.setFillColor(sf::Color::Red);
 
-    for (auto &customer : customers)
+    for (const auto &route : routes)
+    {
+        sf::VertexArray path(sf::LinesStrip, route.size());
+        for (size_t i = 0; i < route.size(); i++)
+        {
+            path[i].position = sf::Vector2f(route[i].x, route[i].y);
+            path[i].color = sf::Color::Black;
+        }
+        window.draw(path);
+    }
+
+    for (const auto &customer : customers)
     {
         blueNode.setPosition(customer.x - 5, customer.y - 5);
         window.draw(blueNode);
     }
-    for (auto &warehouse : warehouses)
+    for (const auto &warehouse : warehouses)
     {
         redNode.setPosition(warehouse.x - 5, warehouse.y - 5);
         window.draw(redNode);
@@ -56,22 +66,29 @@ void visualiseVrp(sf::RenderWindow &window, std::vector<Point> &customers, std::
 int main()
 {
     const int NumCustomers = 20;
-    const int numWarehouses = 3;
+    const int numWarehouses = 1;
+    const int numVehicles = 3;
     const double minDistance = 0.0;
     const double maxDistance = 500.0;
 
     std::vector<Point> customers = getRandomPoints(NumCustomers, minDistance, maxDistance);
     std::vector<Point> warehouses = getRandomPoints(numWarehouses, minDistance, maxDistance);
 
-    for (const auto &point : customers)
-    {
-        std::cout << point.x << ", " << point.y << "\n";
-    }
-    std::cout << "Warehouses\n";
-    for (const auto &point : warehouses)
-    {
-        std::cout << point.x << ", " << point.y << "\n";
-    }
+    std::vector<std::vector<Point>> routes(numVehicles);
+    routes[0].push_back(warehouses[0]);
+    routes[1].push_back(warehouses[1]);
+    routes[2].push_back(warehouses[2]);
+
+    for (int i = 0; i < 7; i++)
+        routes[0].push_back(customers[i]);
+    for (int i = 7; i < 14; i++)
+        routes[1].push_back(customers[i]);
+    for (int i = 14; i < 20; i++)
+        routes[2].push_back(customers[i]);
+
+    routes[0].push_back(warehouses[0]);
+    routes[1].push_back(warehouses[1]);
+    routes[2].push_back(warehouses[2]);
 
     sf::RenderWindow window(sf::VideoMode(500, 500), "VRP");
 
@@ -85,7 +102,7 @@ int main()
         }
 
         window.clear(sf::Color::White);
-        visualiseVrp(window, customers, warehouses);
+        visualiseVrp(window, customers, warehouses, routes);
     }
 
     return 0;
