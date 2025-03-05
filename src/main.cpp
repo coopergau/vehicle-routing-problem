@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <thread>
 #include <chrono>
+#include <limits>
+#include <cmath>
 
 #include "point.h"
 
@@ -24,6 +26,45 @@ std::vector<Point> getRandomPoints(int numPoints, double minDistance, double max
     }
 
     return points;
+}
+
+// Function generates distance matrix where the value at row i and col j is the distance
+// between points i and j.
+std::vector<std::vector<double>> getDistanceMatrix(std::vector<Point> warehouses, std::vector<Point> customers)
+{
+    int numWarehouses = warehouses.size();
+    int numCustomers = customers.size();
+    std::vector<std::vector<double>> distanceMatrix(numWarehouses + numCustomers, std::vector<double>(numWarehouses + numCustomers, 0.0));
+
+    // Combine all points into one vec for iteration
+    std::vector<Point> allLocations(numWarehouses + numCustomers);
+    std::copy(warehouses.begin(), warehouses.end(), allLocations.begin());
+    std::copy(customers.begin(), customers.end(), allLocations.begin() + numWarehouses);
+
+    // Fill the matrix with the distances between locations
+    for (int i = 0; i < numWarehouses + numCustomers; i++)
+    {
+        for (int j = 0; j < numWarehouses + numCustomers; j++)
+        {
+            if (i == j)
+            {
+                // Going from one location to itself is not a valid path
+                distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
+            }
+            else if (i < numWarehouses && j < numWarehouses)
+            {
+                // Going from one warehouse to another warehouse is not a valid path
+                distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
+            }
+            else
+            {
+                double x_dist = allLocations[j].x - allLocations[i].x;
+                double y_dist = allLocations[j].y - allLocations[i].y;
+                distanceMatrix[i][j] = std::sqrt((x_dist * x_dist) + (y_dist * y_dist));
+            }
+        }
+    }
+    return distanceMatrix;
 }
 
 void visualiseVrp(sf::RenderWindow &window,
@@ -68,16 +109,18 @@ int main()
     const int NumCustomers = 20;
     const int numWarehouses = 1;
     const int numVehicles = 3;
-    const double minDistance = 0.0;
+    const double minDistance = 100.0;
     const double maxDistance = 500.0;
 
-    std::vector<Point> customers = getRandomPoints(NumCustomers, minDistance, maxDistance);
     std::vector<Point> warehouses = getRandomPoints(numWarehouses, minDistance, maxDistance);
+    std::vector<Point> customers = getRandomPoints(NumCustomers, minDistance, maxDistance);
+    std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(warehouses, customers);
 
     std::vector<std::vector<Point>> routes(numVehicles);
-    routes[0].push_back(warehouses[0]);
-    routes[1].push_back(warehouses[1]);
-    routes[2].push_back(warehouses[2]);
+    for (int i = 0; i < numVehicles; i++)
+    {
+        routes[i].push_back(warehouses[0]);
+    }
 
     for (int i = 0; i < 7; i++)
         routes[0].push_back(customers[i]);
@@ -86,11 +129,12 @@ int main()
     for (int i = 14; i < 20; i++)
         routes[2].push_back(customers[i]);
 
-    routes[0].push_back(warehouses[0]);
-    routes[1].push_back(warehouses[1]);
-    routes[2].push_back(warehouses[2]);
+    for (int i = 0; i < numVehicles; i++)
+    {
+        routes[i].push_back(warehouses[0]);
+    }
 
-    sf::RenderWindow window(sf::VideoMode(500, 500), "VRP");
+    sf::RenderWindow window(sf::VideoMode(600, 600), "VRP");
 
     while (window.isOpen())
     {
