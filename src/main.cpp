@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "point.h"
+#include "clarke_wright.h"
 
 // Function generates random points within a given area range.
 std::vector<Point> getRandomPoints(int numPoints, double minDistance, double maxDistance)
@@ -30,30 +31,30 @@ std::vector<Point> getRandomPoints(int numPoints, double minDistance, double max
 
 // Function generates distance matrix where the value at row i and col j is the distance
 // between points i and j.
-std::vector<std::vector<double>> getDistanceMatrix(std::vector<Point> warehouses, std::vector<Point> customers)
+std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers)
 {
-    int numWarehouses = warehouses.size();
+    int numDepots = depots.size();
     int numCustomers = customers.size();
-    std::vector<std::vector<double>> distanceMatrix(numWarehouses + numCustomers, std::vector<double>(numWarehouses + numCustomers, 0.0));
+    std::vector<std::vector<double>> distanceMatrix(numDepots + numCustomers, std::vector<double>(numDepots + numCustomers, 0.0));
 
     // Combine all points into one vec for iteration
-    std::vector<Point> allLocations(numWarehouses + numCustomers);
-    std::copy(warehouses.begin(), warehouses.end(), allLocations.begin());
-    std::copy(customers.begin(), customers.end(), allLocations.begin() + numWarehouses);
+    std::vector<Point> allLocations(numDepots + numCustomers);
+    std::copy(depots.begin(), depots.end(), allLocations.begin());
+    std::copy(customers.begin(), customers.end(), allLocations.begin() + numDepots);
 
     // Fill the matrix with the distances between locations
-    for (int i = 0; i < numWarehouses + numCustomers; i++)
+    for (int i = 0; i < numDepots + numCustomers; i++)
     {
-        for (int j = 0; j < numWarehouses + numCustomers; j++)
+        for (int j = 0; j < numDepots + numCustomers; j++)
         {
             if (i == j)
             {
                 // Going from one location to itself is not a valid path
                 distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
             }
-            else if (i < numWarehouses && j < numWarehouses)
+            else if (i < numDepots && j < numDepots)
             {
-                // Going from one warehouse to another warehouse is not a valid path
+                // Going from one depot to another depot is not a valid path
                 distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
             }
             else
@@ -69,10 +70,10 @@ std::vector<std::vector<double>> getDistanceMatrix(std::vector<Point> warehouses
 
 void visualiseVrp(sf::RenderWindow &window,
                   const std::vector<Point> &customers,
-                  const std::vector<Point> &warehouses,
+                  const std::vector<Point> &depots,
                   const std::vector<std::vector<Point>> &routes)
 {
-    // Blue nodes are customers, red nodes are warehouses
+    // Blue nodes are customers, red nodes are depots
     sf::CircleShape blueNode(5);
     blueNode.setFillColor(sf::Color::Blue);
     sf::CircleShape redNode(5);
@@ -94,9 +95,9 @@ void visualiseVrp(sf::RenderWindow &window,
         blueNode.setPosition(customer.x - 5, customer.y - 5);
         window.draw(blueNode);
     }
-    for (const auto &warehouse : warehouses)
+    for (const auto &depot : depots)
     {
-        redNode.setPosition(warehouse.x - 5, warehouse.y - 5);
+        redNode.setPosition(depot.x - 5, depot.y - 5);
         window.draw(redNode);
     }
 
@@ -107,32 +108,16 @@ void visualiseVrp(sf::RenderWindow &window,
 int main()
 {
     const int NumCustomers = 20;
-    const int numWarehouses = 1;
+    const int numDepots = 1;
     const int numVehicles = 3;
     const double minDistance = 100.0;
     const double maxDistance = 500.0;
 
-    std::vector<Point> warehouses = getRandomPoints(numWarehouses, minDistance, maxDistance);
+    std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
     std::vector<Point> customers = getRandomPoints(NumCustomers, minDistance, maxDistance);
-    std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(warehouses, customers);
+    std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-    std::vector<std::vector<Point>> routes(numVehicles);
-    for (int i = 0; i < numVehicles; i++)
-    {
-        routes[i].push_back(warehouses[0]);
-    }
-
-    for (int i = 0; i < 7; i++)
-        routes[0].push_back(customers[i]);
-    for (int i = 7; i < 14; i++)
-        routes[1].push_back(customers[i]);
-    for (int i = 14; i < 20; i++)
-        routes[2].push_back(customers[i]);
-
-    for (int i = 0; i < numVehicles; i++)
-    {
-        routes[i].push_back(warehouses[0]);
-    }
+    std::vector<std::vector<int>> routes = clarkeWrightSolver(distanceMatrix);
 
     sf::RenderWindow window(sf::VideoMode(600, 600), "VRP");
 
@@ -146,7 +131,7 @@ int main()
         }
 
         window.clear(sf::Color::White);
-        visualiseVrp(window, customers, warehouses, routes);
+        // visualiseVrp(window, customers, depots, routes); need to make routes a vec of vecs of points
     }
 
     return 0;
