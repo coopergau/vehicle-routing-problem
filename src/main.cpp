@@ -49,13 +49,14 @@ void visualiseVrp(sf::RenderWindow &window,
 
 int main()
 {
-    const int numCustomers = 50;
+    const int numCustomers = 100;
     const int numDepots = 1;
     const int numVehicles = 3;
     const double minDistance = 100.0;
     const double maxDistance = 500.0;
 
-    std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
+    // std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
+    std::vector<Point> depots = {{300, 300}};
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
