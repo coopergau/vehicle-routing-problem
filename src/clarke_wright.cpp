@@ -1,9 +1,12 @@
 #include "clarke_wright.h"
-#include "point.h"
+#include "utils.h"
 #include <iostream>
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <unordered_map>
+
+std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers);
 
 // Does not alow for specifying the number of routes (vehicles).
 // Starts with the one depot at the first row and col of matrix.
@@ -13,10 +16,10 @@ clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
     // 1. Create savings list and order by descending savings amounts
     std::vector<std::tuple<int, int, double>> savings;
 
-    int numCustomers = distMatrix.size();
-    for (int i = 1; i < numCustomers; i++)
+    int numLocations = distMatrix.size();
+    for (int i = 1; i < numLocations; i++)
     {
-        for (int j = i + 1; j < numCustomers; j++)
+        for (int j = i + 1; j < numLocations; j++)
         {
             double saving = distMatrix[0][i] + distMatrix[0][j] - distMatrix[i][j];
             savings.emplace_back(i, j, saving);
@@ -30,9 +33,27 @@ clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
             - If both points i and j have not been included in a route create a new route by connecting them
             - If only one of i or j has been included in a route and it is not in the interior of the route, the link i-j will be added to the route
             - If both i and j have been included in a route and they are both not interior points, connect their routes
+        3. Any points not included in a route create their own route that consists of only that point.
+        4. Add the depot to the beginning and ending of each route.
+        Steps 2-4 are done in ProcessSavings
     */
-    std::vector<std::vector<Point>> routes;
+    int numCustomers = numLocations - 1; // minus the one depot
+    std::vector<std::vector<int>> routes = processSavings(savings, numCustomers);
+
+    return routes;
+}
+
+// Seperated the function for easier testing
+std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers)
+{
+    /* 2. Iterate through sorted savings list and do one of three things:
+            - If both points i and j have not been included in a route create a new route by connecting them
+            - If only one of i or j has been included in a route and it is not in the interior of the route, the link i-j will be added to the route
+            - If both i and j have been included in a route and they are both not interior points, connect their routes
+    */
+    std::vector<std::vector<int>> routes;
     std::vector<bool> isEdgePoint(numCustomers, false);
+    std::unordered_map<int, int> pointToRoute; // Maps a point index to its route index
 
     for (const auto &s : savings)
     {
@@ -40,32 +61,135 @@ clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
         int j = std::get<1>(s);
 
         // Neither in route
-        if (!isEdgePoint[i] && !isEdgePoint[j])
+        if (pointToRoute.find(i) == pointToRoute.end() && pointToRoute.find(j) == pointToRoute.end())
         {
-            // Make new route
+            std::vector<int> newRoute = {i, j};
+            int routeIndex = routes.size();
+            routes.push_back(newRoute);
+
+            pointToRoute[i] = routeIndex;
+            pointToRoute[j] = routeIndex;
+
             isEdgePoint[i] = true;
             isEdgePoint[j] = true;
         }
 
-        // One is an edge point
-        else if (!isEdgePoint[i] && isEdgePoint[j] ||
-                 isEdgePoint[i] && !isEdgePoint[j])
+        // One is an edge point and other point is not in a route
+        else if (isEdgePoint[i] && pointToRoute.find(j) == pointToRoute.end())
         {
-            // Add the excluded one to route
+            std::vector<int> &route = routes[pointToRoute[i]];
+
+            if (route.front() == i)
+            {
+                route.insert(route.begin(), j);
+            }
+            else if (route.back() == i)
+            {
+                route.push_back(j);
+            }
+
+            isEdgePoint[i] = false;
+            isEdgePoint[j] = true;
+            pointToRoute[j] = pointToRoute[i];
+        }
+        else if (isEdgePoint[j] && pointToRoute.find(i) == pointToRoute.end())
+        {
+            std::vector<int> &route = routes[pointToRoute[j]];
+            if (route.front() == j)
+            {
+                route.insert(route.begin(), i);
+            }
+            else if (route.back() == j)
+            {
+                route.push_back(i);
+            }
+
+            isEdgePoint[j] = false;
+            isEdgePoint[i] = true;
+            pointToRoute[i] = pointToRoute[j];
         }
 
         // Both are end points
-        else if (isEdgePoint[i] && isEdgePoint[j])
+        else if (isEdgePoint[i] && isEdgePoint[j] && pointToRoute[i] != pointToRoute[j])
         {
-            // Combine routes
+            int routeIndexI = pointToRoute[i];
+            int routeIndexJ = pointToRoute[j];
+
+            // Make routeI the one with the smaller index
+            if (routeIndexI > routeIndexJ)
+            {
+                std::swap(routeIndexI, routeIndexJ);
+                std::swap(i, j);
+            }
+
+            std::vector<int> &routeI = routes[routeIndexI];
+            std::vector<int> &routeJ = routes[routeIndexJ];
+
+            // Combine vectors, reverse if i and j are both at the front or both at the back
+            if (routeI.front() == i)
+            {
+                if (routeJ.front() == j)
+                {
+                    std::reverse(routeJ.begin(), routeJ.end());
+                    routeI.insert(routeI.begin(), routeJ.begin(), routeJ.end());
+                }
+                else if (routeJ.back() == j)
+                {
+                    routeI.insert(routeI.begin(), routeJ.begin(), routeJ.end());
+                }
+            }
+            else if (routeI.back() == i)
+            {
+                if (routeJ.front() == j)
+                {
+                    routeI.insert(routeI.end(), routeJ.begin(), routeJ.end());
+                }
+                else if (routeJ.back() == j)
+                {
+                    std::reverse(routeJ.begin(), routeJ.end());
+                    routeI.insert(routeI.end(), routeJ.begin(), routeJ.end());
+                }
+            }
+
+            isEdgePoint[i] = false;
+            isEdgePoint[j] = false;
+
+            // Update the pointToRoute indices
+            for (int point : routeJ)
+            {
+                pointToRoute[point] = routeIndexI;
+            }
+
+            routes.erase(routes.begin() + routeIndexJ);
+            if (routeIndexJ < routes.size())
+            {
+                for (int row = routeIndexJ; row < routes.size(); row++)
+                {
+                    for (int point : routes[row])
+                    {
+                        pointToRoute[point] = row;
+                    }
+                }
+            }
         }
     }
 
-    for (const auto &s : savings)
+    // 3. Any points not included in a route create their own route that consists of only that point.
+    for (int i = 1; i < numCustomers + 1; i++)
     {
-        std::cout << "S(" << std::get<0>(s) << ", " << std::get<1>(s) << ") = " << std::get<2>(s) << "\n";
+        if (pointToRoute.find(i) == pointToRoute.end())
+        {
+            std::vector<int> newRoute = {i};
+            routes.push_back(newRoute);
+        }
     }
 
-    std::vector<std::vector<int>> placeholder;
-    return placeholder;
+    // 4. Add the depot to the beginning and ending of each route.
+    for (auto &route : routes)
+    {
+        route.insert(route.begin(), 0);
+        route.push_back(0);
+    }
+
+    return routes;
 }

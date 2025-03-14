@@ -7,66 +7,8 @@
 #include <limits>
 #include <cmath>
 
-#include "point.h"
+#include "utils.h"
 #include "clarke_wright.h"
-
-// Function generates random points within a given area range.
-std::vector<Point> getRandomPoints(int numPoints, double minDistance, double maxDistance)
-{
-    std::vector<Point> points;
-
-    // Specify rng
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dist(minDistance, maxDistance);
-
-    // Generate points
-    for (int i = 0; i < numPoints; i++)
-    {
-        points.push_back({dist(gen), dist(gen)});
-    }
-
-    return points;
-}
-
-// Function generates distance matrix where the value at row i and col j is the distance
-// between points i and j.
-std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers)
-{
-    int numDepots = depots.size();
-    int numCustomers = customers.size();
-    std::vector<std::vector<double>> distanceMatrix(numDepots + numCustomers, std::vector<double>(numDepots + numCustomers, 0.0));
-
-    // Combine all points into one vec for iteration
-    std::vector<Point> allLocations(numDepots + numCustomers);
-    std::copy(depots.begin(), depots.end(), allLocations.begin());
-    std::copy(customers.begin(), customers.end(), allLocations.begin() + numDepots);
-
-    // Fill the matrix with the distances between locations
-    for (int i = 0; i < numDepots + numCustomers; i++)
-    {
-        for (int j = 0; j < numDepots + numCustomers; j++)
-        {
-            if (i == j)
-            {
-                // Going from one location to itself is not a valid path
-                distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
-            }
-            else if (i < numDepots && j < numDepots)
-            {
-                // Going from one depot to another depot is not a valid path
-                distanceMatrix[i][j] = std::numeric_limits<double>::infinity();
-            }
-            else
-            {
-                double x_dist = allLocations[j].x - allLocations[i].x;
-                double y_dist = allLocations[j].y - allLocations[i].y;
-                distanceMatrix[i][j] = std::sqrt((x_dist * x_dist) + (y_dist * y_dist));
-            }
-        }
-    }
-    return distanceMatrix;
-}
 
 void visualiseVrp(sf::RenderWindow &window,
                   const std::vector<Point> &customers,
@@ -107,17 +49,26 @@ void visualiseVrp(sf::RenderWindow &window,
 
 int main()
 {
-    const int NumCustomers = 20;
+    const int numCustomers = 50;
     const int numDepots = 1;
     const int numVehicles = 3;
     const double minDistance = 100.0;
     const double maxDistance = 500.0;
 
     std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
-    std::vector<Point> customers = getRandomPoints(NumCustomers, minDistance, maxDistance);
+    std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-    std::vector<std::vector<int>> routes = clarkeWrightSolver(distanceMatrix);
+    std::vector<std::vector<int>> routesByIndex = clarkeWrightSolver(distanceMatrix);
+
+    for (const auto &route : routesByIndex)
+    {
+        for (const auto p : route)
+        {
+            std::cout << p << " ";
+        }
+        std::cout << std::endl;
+    }
 
     sf::RenderWindow window(sf::VideoMode(600, 600), "VRP");
 
@@ -131,7 +82,25 @@ int main()
         }
 
         window.clear(sf::Color::White);
-        // visualiseVrp(window, customers, depots, routes); need to make routes a vec of vecs of points
+
+        std::vector<std::vector<Point>> routes; // temp check if this is optimal
+
+        std::vector<Point> allLocations;
+        allLocations.reserve(depots.size() + customers.size()); // Optimize memory allocation
+        allLocations.insert(allLocations.end(), depots.begin(), depots.end());
+        allLocations.insert(allLocations.end(), customers.begin(), customers.end());
+
+        for (const auto &routeIndices : routesByIndex) // Loop over each route
+        {
+            std::vector<Point> route;
+            for (int index : routeIndices)
+            {
+                route.push_back(allLocations[index]);
+            }
+            routes.push_back(route);
+        }
+
+        visualiseVrp(window, customers, depots, routes); // need to make routes a vec of vecs of points
     }
 
     return 0;

@@ -4,5 +4,6 @@
 #include <vector>
 
 std::vector<std::vector<int>> clarkeWrightSolver(std::vector<std::vector<double>> distMatrix);
+std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers);
 
 #endif

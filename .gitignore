@@ -46,3 +46,6 @@ Makefile
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Personal debugging
+debug_text.txt
