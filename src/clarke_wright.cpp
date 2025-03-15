@@ -6,12 +6,12 @@
 #include <algorithm>
 #include <unordered_map>
 
-std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers);
+std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages);
 
 // Does not alow for specifying the number of routes (vehicles).
 // Starts with the one depot at the first row and col of matrix.
 std::vector<std::vector<int>>
-clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
+clarkeWrightSolver(std::vector<std::vector<double>> &distMatrix, int maxPackages)
 {
     // 1. Create savings list and order by descending savings amounts
     std::vector<std::tuple<int, int, double>> savings;
@@ -29,7 +29,7 @@ clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
     std::sort(savings.begin(), savings.end(), [](const auto &a, const auto &b)
               { return std::get<2>(a) > std::get<2>(b); });
 
-    /* 2. Iterate through sorted savings list and do one of three things:
+    /* 2. Iterate through sorted savings list and do one of three things as long it does not create a route with more locations than maxPackages:
             - If both points i and j have not been included in a route create a new route by connecting them
             - If only one of i or j has been included in a route and it is not in the interior of the route, the link i-j will be added to the route
             - If both i and j have been included in a route and they are both not interior points, connect their routes
@@ -38,13 +38,13 @@ clarkeWrightSolver(std::vector<std::vector<double>> distMatrix)
         Steps 2-4 are done in ProcessSavings
     */
     int numCustomers = numLocations - 1; // minus the one depot
-    std::vector<std::vector<int>> routes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> routes = processSavings(savings, numCustomers, maxPackages);
 
     return routes;
 }
 
 // Seperated the function for easier testing
-std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers)
+std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages)
 {
     /* 2. Iterate through sorted savings list and do one of three things:
             - If both points i and j have not been included in a route create a new route by connecting them
@@ -74,8 +74,8 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             isEdgePoint[j] = true;
         }
 
-        // One is an edge point and other point is not in a route
-        else if (isEdgePoint[i] && pointToRoute.find(j) == pointToRoute.end())
+        // One (at index i) is an edge point and other point is not in a route and the route is less than the max length
+        else if (isEdgePoint[i] && pointToRoute.find(j) == pointToRoute.end() && routes[pointToRoute[i]].size() != maxPackages)
         {
             std::vector<int> &route = routes[pointToRoute[i]];
 
@@ -92,7 +92,9 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             isEdgePoint[j] = true;
             pointToRoute[j] = pointToRoute[i];
         }
-        else if (isEdgePoint[j] && pointToRoute.find(i) == pointToRoute.end())
+
+        // One (at index j) is an edge point and other point is not in a route and the route is less than the max length
+        else if (isEdgePoint[j] && pointToRoute.find(i) == pointToRoute.end() && routes[pointToRoute[j]].size() != maxPackages)
         {
             std::vector<int> &route = routes[pointToRoute[j]];
             if (route.front() == j)
@@ -109,8 +111,10 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             pointToRoute[i] = pointToRoute[j];
         }
 
-        // Both are end points
-        else if (isEdgePoint[i] && isEdgePoint[j] && pointToRoute[i] != pointToRoute[j])
+        // Both are end points and they are on different routes and combining them will not violate max route length
+        else if (isEdgePoint[i] && isEdgePoint[j] &&
+                 pointToRoute[i] != pointToRoute[j] &&
+                 routes[pointToRoute[i]].size() + routes[pointToRoute[j]].size() <= maxPackages)
         {
             int routeIndexI = pointToRoute[i];
             int routeIndexJ = pointToRoute[j];
@@ -175,7 +179,7 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
     }
 
     // 3. Any points not included in a route create their own route that consists of only that point.
-    for (int i = 1; i < numCustomers + 1; i++)
+    for (int i = 1; i <= numCustomers; i++)
     {
         if (pointToRoute.find(i) == pointToRoute.end())
         {

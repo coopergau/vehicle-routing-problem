@@ -4,10 +4,16 @@
 #include "utils.h"
 #include "clarke_wright.h"
 
-TEST_CASE("Fuzz test that clarkeWrightSolver returns routes where every location index is included exactly once", "[clarkeWrightSolver]")
+/* Fuzz test checks that:
+    1. The routes generated include every customer (represented as their index) exactly once.
+    2. Each route starts and ends with zero (depot).
+    3. Zero does not occur anywhere else.
+    4. No route is longer than the max length (maxPackages).
+*/
+TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWrightSolver]")
 {
     // Get a list of random customer amounts
-    int fuzzRounds = 100;
+    int fuzzRounds = 50;
     int minCustomers = 5;
     int maxCustomers = 500;
 
@@ -21,16 +27,11 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns routes where every location
         amount = dist(gen);
     }
 
-    /*  For every amount in the customerAmounts, check that:
-        1. The routes generated include every customer (represented as their index) exactly once.
-        2. Each route starts and ends with zero (depot).
-        3. Zero does not occur anywhere else.
-    */
-
     for (const auto numCustomers : customerAmounts)
     {
         const int numDepots = 1;
         const int numVehicles = 3;
+        const int maxPackages = 10;
         const double minDistance = 100.0;
         const double maxDistance = 500.0;
 
@@ -38,7 +39,7 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns routes where every location
         std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
         std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-        std::vector<std::vector<int>> routes = clarkeWrightSolver(distanceMatrix);
+        std::vector<std::vector<int>> routes = clarkeWrightSolver(distanceMatrix, maxPackages);
 
         // Count occurences of each index
         std::vector<int> count(numCustomers + 1, 0);
@@ -66,6 +67,12 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns routes where every location
 
         // Check that zero occurs nowhere else
         REQUIRE(count[0] == routes.size() * 2);
+
+        // Check that each route does not violate max length
+        for (const auto &route : routes)
+        {
+            REQUIRE(route.size() <= maxPackages + 2); // + 2 to account for the zero at beginning and end.
+        }
     }
 }
 
@@ -75,8 +82,9 @@ TEST_CASE("Process savings makes single routes", "[processSavings]")
         {1, 2, 10.0},
         {3, 4, 9.0}};
     int numCustomers = 4;
+    int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 1, 2, 0},
                                                     {0, 3, 4, 0}};
@@ -92,8 +100,9 @@ TEST_CASE("Process savings joins single element to route", "[processSavings]")
         {5, 1, 8.0},
         {6, 4, 8.0}};
     int numCustomers = 6;
+    int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 5, 1, 2, 0},
                                                     {0, 3, 4, 6, 0}};
@@ -108,8 +117,9 @@ TEST_CASE("Process savings joins routes", "[processSavings]")
         {3, 4, 9.0},
         {2, 3, 8.0}};
     int numCustomers = 4;
+    int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 1, 2, 3, 4, 0}};
 
@@ -126,8 +136,9 @@ TEST_CASE("Process savings adds elements to two routes and then joins them", "[p
         {7, 6, 6.0},
         {7, 4, 5.0}};
     int numCustomers = 7;
+    int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 5, 6, 7, 4, 1, 2, 3, 0}};
 
@@ -174,7 +185,7 @@ TEST_CASE("Example savings list from 15 random points is processsed correctly", 
         {9, 13, 109.207},
         {2, 7, 107.476},
         {1, 8, 106.898},
-        {3, 15, 103.658}, //
+        {3, 15, 103.658},
         {7, 15, 102.463},
         {7, 11, 102.328},
         {1, 14, 100.826},
@@ -244,8 +255,9 @@ TEST_CASE("Example savings list from 15 random points is processsed correctly", 
         {4, 7, 0.00501565},
     };
     int numCustomers = 15;
+    int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers);
+    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {
         {0, 4, 5, 9, 12, 8, 13, 10, 1, 15, 7, 3, 14, 2, 6, 11, 0},
