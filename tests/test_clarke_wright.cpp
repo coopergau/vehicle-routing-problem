@@ -39,7 +39,7 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWri
         std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
         std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-        std::vector<std::vector<int>> routes = clarkeWrightSolver(distanceMatrix, maxPackages);
+        auto [routes, routesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
 
         // Count occurences of each index
         std::vector<int> count(numCustomers + 1, 0);
@@ -84,7 +84,7 @@ TEST_CASE("Process savings makes single routes", "[processSavings]")
     int numCustomers = 4;
     int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
+    auto [actualRoutes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 1, 2, 0},
                                                     {0, 3, 4, 0}};
@@ -102,7 +102,7 @@ TEST_CASE("Process savings joins single element to route", "[processSavings]")
     int numCustomers = 6;
     int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
+    auto [actualRoutes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 5, 1, 2, 0},
                                                     {0, 3, 4, 6, 0}};
@@ -119,7 +119,7 @@ TEST_CASE("Process savings joins routes", "[processSavings]")
     int numCustomers = 4;
     int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
+    auto [actualRoutes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 1, 2, 3, 4, 0}};
 
@@ -138,7 +138,7 @@ TEST_CASE("Process savings adds elements to two routes and then joins them", "[p
     int numCustomers = 7;
     int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
+    auto [actualRoutes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {{0, 5, 6, 7, 4, 1, 2, 3, 0}};
 
@@ -257,7 +257,7 @@ TEST_CASE("Example savings list from 15 random points is processsed correctly", 
     int numCustomers = 15;
     int maxPackages = 100;
 
-    std::vector<std::vector<int>> actualRoutes = processSavings(savings, numCustomers, maxPackages);
+    auto [actualRoutes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
     std::vector<std::vector<int>> expectedRoutes = {
         {0, 4, 5, 9, 12, 8, 13, 10, 1, 15, 7, 3, 14, 2, 6, 11, 0},

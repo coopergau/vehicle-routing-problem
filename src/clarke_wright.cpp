@@ -5,12 +5,17 @@
 #include <tuple>
 #include <algorithm>
 #include <unordered_map>
+#include <utility>
 
-std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages);
+std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
+processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages);
 
-// Does not alow for specifying the number of routes (vehicles).
-// Starts with the one depot at the first row and col of matrix.
-std::vector<std::vector<int>>
+/* Clarke-Wright algorithm
+    - Returns a final version of the routes and the vector of the routes at each step of the algorithm.
+    - Does not alow for specifying the number of routes (vehicles).
+    - Starts with the one depot at the first row and col of matrix.
+*/
+std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
 clarkeWrightSolver(std::vector<std::vector<double>> &distMatrix, int maxPackages)
 {
     // 1. Create savings list and order by descending savings amounts
@@ -38,13 +43,14 @@ clarkeWrightSolver(std::vector<std::vector<double>> &distMatrix, int maxPackages
         Steps 2-4 are done in ProcessSavings
     */
     int numCustomers = numLocations - 1; // minus the one depot
-    std::vector<std::vector<int>> routes = processSavings(savings, numCustomers, maxPackages);
+    auto [routes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
-    return routes;
+    return {routes, routesProgress};
 }
 
 // Seperated the function for easier testing
-std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages)
+std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
+processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages)
 {
     /* 2. Iterate through sorted savings list and do one of three things:
             - If both points i and j have not been included in a route create a new route by connecting them
@@ -52,6 +58,7 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             - If both i and j have been included in a route and they are both not interior points, connect their routes
     */
     std::vector<std::vector<int>> routes;
+    std::vector<std::vector<std::vector<int>>> routesProgress;
     std::vector<bool> isEdgePoint(numCustomers, false);
     std::unordered_map<int, int> pointToRoute; // Maps a point index to its route index
 
@@ -72,6 +79,8 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
 
             isEdgePoint[i] = true;
             isEdgePoint[j] = true;
+
+            routesProgress.push_back(routes);
         }
 
         // One (at index i) is an edge point and other point is not in a route and the route is less than the max length
@@ -91,6 +100,8 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             isEdgePoint[i] = false;
             isEdgePoint[j] = true;
             pointToRoute[j] = pointToRoute[i];
+
+            routesProgress.push_back(routes);
         }
 
         // One (at index j) is an edge point and other point is not in a route and the route is less than the max length
@@ -109,6 +120,8 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
             isEdgePoint[j] = false;
             isEdgePoint[i] = true;
             pointToRoute[i] = pointToRoute[j];
+
+            routesProgress.push_back(routes);
         }
 
         // Both are end points and they are on different routes and combining them will not violate max route length
@@ -175,6 +188,8 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
                     }
                 }
             }
+
+            routesProgress.push_back(routes);
         }
     }
 
@@ -185,6 +200,7 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
         {
             std::vector<int> newRoute = {i};
             routes.push_back(newRoute);
+            routesProgress.push_back(routes);
         }
     }
 
@@ -195,5 +211,5 @@ std::vector<std::vector<int>> processSavings(std::vector<std::tuple<int, int, do
         route.push_back(0);
     }
 
-    return routes;
+    return {routes, routesProgress};
 }
