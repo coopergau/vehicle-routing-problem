@@ -10,6 +10,32 @@
 #include "utils.h"
 #include "clarke_wright.h"
 
+std::vector<std::vector<Point>> routeIndicesToLocations(
+    std::vector<std::vector<int>> routesByIndex,
+    std::vector<Point> depots,
+    std::vector<Point> customers)
+{
+    // Take the routes by index and map them to their actual locations to get routes by location.
+    std::vector<Point> allLocations;
+    allLocations.reserve(depots.size() + customers.size());
+    allLocations.insert(allLocations.end(), depots.begin(), depots.end());
+    allLocations.insert(allLocations.end(), customers.begin(), customers.end());
+
+    std::vector<std::vector<Point>> routes;
+
+    for (const auto &routeIndices : routesByIndex)
+    {
+        std::vector<Point> route;
+        for (int index : routeIndices)
+        {
+            route.push_back(allLocations[index]);
+        }
+        routes.push_back(route);
+    }
+
+    return routes;
+}
+
 void visualiseVrp(sf::RenderWindow &window,
                   const std::vector<Point> &customers,
                   const std::vector<Point> &depots,
@@ -49,7 +75,7 @@ void visualiseVrp(sf::RenderWindow &window,
 
 int main()
 {
-    const int numCustomers = 50;
+    const int numCustomers = 20;
     const int numDepots = 1;
     const int maxPackages = 10;
     const double minDistance = 100.0;
@@ -72,8 +98,9 @@ int main()
         std::cout << std::endl;
     }
 
-    sf::RenderWindow window(sf::VideoMode(600, 600), "VRP");
+    std::vector<std::vector<Point>> routes = routeIndicesToLocations(routesByIndex, depots, customers);
 
+    sf::RenderWindow window(sf::VideoMode(600, 600), "Routes");
     while (window.isOpen())
     {
         sf::Event event;
@@ -85,24 +112,7 @@ int main()
 
         window.clear(sf::Color::White);
 
-        std::vector<std::vector<Point>> routes; // temp check if this is optimal
-
-        std::vector<Point> allLocations;
-        allLocations.reserve(depots.size() + customers.size()); // Optimize memory allocation
-        allLocations.insert(allLocations.end(), depots.begin(), depots.end());
-        allLocations.insert(allLocations.end(), customers.begin(), customers.end());
-
-        for (const auto &routeIndices : routesByIndex) // Loop over each route
-        {
-            std::vector<Point> route;
-            for (int index : routeIndices)
-            {
-                route.push_back(allLocations[index]);
-            }
-            routes.push_back(route);
-        }
-
-        visualiseVrp(window, customers, depots, routes); // need to make routes a vec of vecs of points
+        visualiseVrp(window, customers, depots, routes);
     }
 
     return 0;
