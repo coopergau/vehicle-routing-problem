@@ -10,32 +10,6 @@
 #include "utils.h"
 #include "clarke_wright.h"
 
-std::vector<std::vector<Point>> routeIndicesToLocations(
-    std::vector<std::vector<int>> routesByIndex,
-    std::vector<Point> depots,
-    std::vector<Point> customers)
-{
-    // Take the routes by index and map them to their actual locations to get routes by location.
-    std::vector<Point> allLocations;
-    allLocations.reserve(depots.size() + customers.size());
-    allLocations.insert(allLocations.end(), depots.begin(), depots.end());
-    allLocations.insert(allLocations.end(), customers.begin(), customers.end());
-
-    std::vector<std::vector<Point>> routes;
-
-    for (const auto &routeIndices : routesByIndex)
-    {
-        std::vector<Point> route;
-        for (int index : routeIndices)
-        {
-            route.push_back(allLocations[index]);
-        }
-        routes.push_back(route);
-    }
-
-    return routes;
-}
-
 void visualiseRoutes(sf::RenderWindow &window,
                      const std::vector<Point> &customers,
                      const std::vector<Point> &depots,
@@ -131,25 +105,32 @@ void animateRoutes(sf::RenderWindow &window,
         }
 
         window.display();
-        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 };
 
 int main()
 {
-    const int numCustomers = 50;
+    const int numCustomers = 55;
     const int numDepots = 1;
     const int maxPackages = 10;
     const double minDistance = 100.0;
     const double maxDistance = 500.0;
     const double centerCoords = 300;
 
-    // std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
-    std::vector<Point> depots = {{centerCoords, centerCoords}};
+    const std::string exportFile = "visuals/routes.csv";
+
+    std::vector<Point>
+        depots = {{centerCoords, centerCoords}};
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
     auto [routesByIndex, RoutesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
+
+    std::vector<Point> locations(numDepots + numCustomers);
+    std::copy(depots.begin(), depots.end(), locations.begin());
+    std::copy(customers.begin(), customers.end(), locations.begin() + numDepots);
+    exportMatrixToCSV(routesByIndex, locations, exportFile);
 
     for (const auto &route : routesByIndex)
     {

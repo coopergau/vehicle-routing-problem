@@ -3,8 +3,17 @@
 #include <vector>
 #include <random>
 #include <cmath>
+#include <string>
+#include <fstream>
 
-// Function generates random points within a given area range.
+// For writing Point types to csv
+std::ostream &operator<<(std::ostream &os, const Point &point)
+{
+    os << point.x << "," << point.y;
+    return os;
+}
+
+// Generates random points within a given area range.
 std::vector<Point> getRandomPoints(int numPoints, double minDistance, double maxDistance)
 {
     std::vector<Point> points;
@@ -23,8 +32,7 @@ std::vector<Point> getRandomPoints(int numPoints, double minDistance, double max
     return points;
 }
 
-// Function generates distance matrix where the value at row i and col j is the distance
-// between points i and j.
+// Generates distance matrix where the value at row i and col j is the distance between points i and j.
 std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers)
 {
     int numDepots = depots.size();
@@ -59,5 +67,57 @@ std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &dep
             }
         }
     }
+
     return distanceMatrix;
+}
+
+// Take the routes by index and map them to their actual location coordinates to get routes by location.
+std::vector<std::vector<Point>> routeIndicesToLocations(
+    std::vector<std::vector<int>> routesByIndex,
+    std::vector<Point> depots,
+    std::vector<Point> customers)
+{
+    std::vector<Point> allLocations;
+    allLocations.reserve(depots.size() + customers.size());
+    allLocations.insert(allLocations.end(), depots.begin(), depots.end());
+    allLocations.insert(allLocations.end(), customers.begin(), customers.end());
+
+    std::vector<std::vector<Point>> routes;
+
+    for (const auto &routeIndices : routesByIndex)
+    {
+        std::vector<Point> route;
+        for (int index : routeIndices)
+        {
+            route.push_back(allLocations[index]);
+        }
+        routes.push_back(route);
+    }
+
+    return routes;
+}
+
+void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point> &locations, const std::string &filename)
+{
+    std::ofstream file(filename);
+
+    // Write the locations
+    for (const auto location : locations)
+    {
+        file << location;
+        file << ",";
+    }
+    file << "\n";
+
+    // Write the routes
+    for (const auto &route : routes)
+    {
+        for (const auto customer : route)
+        {
+            file << customer;
+            file << ",";
+        }
+        file << "\n";
+    }
+    file.close();
 }
