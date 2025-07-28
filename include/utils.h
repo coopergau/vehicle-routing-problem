@@ -7,8 +7,8 @@
 // Struct representing the position of a point that would be a drop off location.
 struct Point
 {
-    double x;
-    double y;
+    double x{};
+    double y{};
 };
 std::ostream &operator<<(std::ostream &os, const Point &point);
 
