@@ -31,7 +31,7 @@ def get_routes(file_name):
     
     return all_routes
 
-def plot_routes_animation(locations, all_routes, interval=1000):
+def plot_routes_animation(locations, all_routes, interval=50):
     # Get ordered location coords
     x = [location[0] for location in locations]
     y = [location[1] for location in locations]
@@ -63,9 +63,11 @@ def plot_routes_animation(locations, all_routes, interval=1000):
                 ax.plot(start, next_point, c="black")
         
         ax.set_title(f"Iterations {frame+1}")
+        
 
     # animate
-    anim = animation.FuncAnimation(fig, animate, frames=len(all_routes), 
+    frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] * 20
+    anim = animation.FuncAnimation(fig, animate, frames=frames_with_pause, 
                                  interval=interval, repeat=True)
     
     plt.show()
