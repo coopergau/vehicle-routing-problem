@@ -19,5 +19,6 @@ std::vector<std::vector<Point>> routeIndicesToLocations(
     std::vector<Point> depots,
     std::vector<Point> customers);
 void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point> &locations, const std::string &filename);
+void exportRoutesProgressToCSV(std::vector<std::vector<std::vector<int>>> &routesProgress, std::vector<Point> &locations, const std::string &filename);
 
 #endif

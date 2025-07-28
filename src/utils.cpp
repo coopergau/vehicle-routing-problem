@@ -121,3 +121,33 @@ void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point>
     }
     file.close();
 }
+
+void exportRoutesProgressToCSV(std::vector<std::vector<std::vector<int>>> &routesProgress, std::vector<Point> &locations, const std::string &filename)
+{
+    std::ofstream file(filename);
+
+    // Write the locations
+    for (const auto location : locations)
+    {
+        file << location;
+        file << ",";
+    }
+    file << "\n";
+
+    // Write the routes
+    for (const auto &routes : routesProgress)
+    {
+        for (const auto &route : routes)
+        {
+            for (const auto customer : route)
+            {
+                file << customer;
+                file << ",";
+            }
+            file << "\n";
+        }
+        file << "END";
+        file << "\n";
+    }
+    file.close();
+}
