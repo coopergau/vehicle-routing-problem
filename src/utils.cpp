@@ -119,6 +119,7 @@ void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point>
         }
         file << "\n";
     }
+    file << "END";
     file.close();
 }
 

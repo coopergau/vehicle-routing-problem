@@ -9,14 +9,15 @@
 
 #include "utils.h"
 #include "clarke_wright.h"
+#include "genetic_algorithm.h"
 
 int main()
 {
     const int numCustomers = 100;
     const int numDepots = 1;
     const int maxPackages = 10;
-    const double minDistance = 100.0;
-    const double maxDistance = 500.0;
+    const double minDistance = 100;
+    const double maxDistance = 500;
     const double centerCoords = 300;
 
     const std::string exportFile = "visuals/routes.csv";
@@ -26,11 +27,17 @@ int main()
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-    auto [routesByIndex, routesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
+    std::vector<std::vector<int>> genRoutes = genetic_solver(distanceMatrix, maxPackages);
 
     std::vector<Point> locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());
     std::copy(customers.begin(), customers.end(), locations.begin() + numDepots);
+    exportMatrixToCSV(genRoutes, locations, exportFile);
+
+    /* Working Clarke-Wright stuff
+
+    auto [routesByIndex, routesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
+
     exportMatrixToCSV(routesByIndex, locations, exportFile);
 
     for (const auto &route : routesByIndex)
@@ -69,6 +76,7 @@ int main()
 
     // Export routes progress to csv
     exportRoutesProgressToCSV(routesProgress, locations, exportFile);
+    */
 
     return 0;
 }
