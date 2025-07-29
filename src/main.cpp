@@ -16,6 +16,8 @@ int main()
     const int numCustomers = 100;
     const int numDepots = 1;
     const int maxPackages = 10;
+    const size_t populationSize = 50;
+    const int maxGenerations = 50;
     const double minDistance = 100;
     const double maxDistance = 500;
     const double centerCoords = 300;
@@ -27,7 +29,7 @@ int main()
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-    std::vector<std::vector<int>> genRoutes = genetic_solver(distanceMatrix, maxPackages);
+    std::vector<std::vector<int>> genRoutes = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations);
 
     std::vector<Point> locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());

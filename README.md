@@ -6,3 +6,5 @@ Vehicle Routing Problem
 ### WSL Installation
 sudo apt install libsfml-dev
 
+## To Do
+ - add tests for the fitness calculations
