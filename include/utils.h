@@ -12,13 +12,13 @@ struct Point
 };
 std::ostream &operator<<(std::ostream &os, const Point &point);
 
-std::vector<Point> getRandomPoints(int count, double minDistance, double maxDistance);
+std::vector<Point> getRandomPoints(const size_t count, const double minDistance, const double maxDistance);
 std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers);
 std::vector<std::vector<Point>> routeIndicesToLocations(
-    std::vector<std::vector<int>> routesByIndex,
-    std::vector<Point> depots,
-    std::vector<Point> customers);
-void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point> &locations, const std::string &filename);
-void exportRoutesProgressToCSV(std::vector<std::vector<std::vector<int>>> &routesProgress, std::vector<Point> &locations, const std::string &filename);
+    const std::vector<std::vector<int>> routesByIndex,
+    const std::vector<Point> depots,
+    const std::vector<Point> customers);
+void exportMatrixToCSV(const std::vector<std::vector<int>> &routes, const std::vector<Point> &locations, const std::string &filename);
+void exportRoutesProgressToCSV(const std::vector<std::vector<std::vector<int>>> &routesProgress, const std::vector<Point> &locations, const std::string &filename);
 
 #endif

@@ -31,7 +31,7 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWri
     {
         const int numDepots = 1;
         const int numVehicles = 3;
-        const int maxPackages = 10;
+        const size_t maxPackages = 10;
         const double minDistance = 100.0;
         const double maxDistance = 500.0;
 

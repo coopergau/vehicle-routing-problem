@@ -14,7 +14,7 @@ std::ostream &operator<<(std::ostream &os, const Point &point)
 }
 
 // Generates random points within a given area range.
-std::vector<Point> getRandomPoints(int numPoints, double minDistance, double maxDistance)
+std::vector<Point> getRandomPoints(const size_t numPoints, const double minDistance, const double maxDistance)
 {
     std::vector<Point> points;
 
@@ -73,9 +73,9 @@ std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &dep
 
 // Take the routes by index and map them to their actual location coordinates to get routes by location.
 std::vector<std::vector<Point>> routeIndicesToLocations(
-    std::vector<std::vector<int>> routesByIndex,
-    std::vector<Point> depots,
-    std::vector<Point> customers)
+    const std::vector<std::vector<int>> routesByIndex,
+    const std::vector<Point> depots,
+    const std::vector<Point> customers)
 {
     std::vector<Point> allLocations;
     allLocations.reserve(depots.size() + customers.size());
@@ -97,7 +97,7 @@ std::vector<std::vector<Point>> routeIndicesToLocations(
     return routes;
 }
 
-void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point> &locations, const std::string &filename)
+void exportMatrixToCSV(const std::vector<std::vector<int>> &routes, const std::vector<Point> &locations, const std::string &filename)
 {
     std::ofstream file(filename);
 
@@ -123,7 +123,7 @@ void exportMatrixToCSV(std::vector<std::vector<int>> &routes, std::vector<Point>
     file.close();
 }
 
-void exportRoutesProgressToCSV(std::vector<std::vector<std::vector<int>>> &routesProgress, std::vector<Point> &locations, const std::string &filename)
+void exportRoutesProgressToCSV(const std::vector<std::vector<std::vector<int>>> &routesProgress, const std::vector<Point> &locations, const std::string &filename)
 {
     std::ofstream file(filename);
 

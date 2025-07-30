@@ -7,21 +7,18 @@
 #include <unordered_map>
 #include <utility>
 
-std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
-processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages);
-
 /* Clarke-Wright algorithm
     - Returns a final version of the routes and the vector of the routes at each step of the algorithm.
     - Does not alow for specifying the number of routes (vehicles).
     - Starts with the one depot at the first row and col of matrix.
 */
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
-clarkeWrightSolver(std::vector<std::vector<double>> &distMatrix, int maxPackages)
+clarkeWrightSolver(const std::vector<std::vector<double>> &distMatrix, const size_t maxPackages)
 {
     // 1. Create savings list and order by descending savings amounts
     std::vector<std::tuple<int, int, double>> savings;
 
-    int numLocations = distMatrix.size();
+    size_t numLocations = distMatrix.size();
     for (int i = 1; i < numLocations; i++)
     {
         for (int j = i + 1; j < numLocations; j++)
@@ -50,7 +47,7 @@ clarkeWrightSolver(std::vector<std::vector<double>> &distMatrix, int maxPackages
 
 // Seperated the function for easier testing
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
-processSavings(std::vector<std::tuple<int, int, double>> &savings, int numCustomers, int maxPackages)
+processSavings(const std::vector<std::tuple<int, int, double>> &savings, const size_t numCustomers, const size_t maxPackages)
 {
     /* 2. Iterate through sorted savings list and do one of three things:
             - If both points i and j have not been included in a route create a new route by connecting them
