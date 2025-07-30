@@ -7,6 +7,6 @@ std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int
 clarkeWrightSolver(const std::vector<std::vector<double>> &distMatrix, const size_t maxPackages);
 
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
-processSavings(const std::vector<std::tuple<int, int, double>> &savings, const size_t numCustomers, const size_t maxPackages);
+processSavings(const std::vector<std::tuple<int, int, double>> &savings, size_t numCustomers, size_t maxPackages);
 
 #endif

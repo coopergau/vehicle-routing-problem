@@ -14,7 +14,7 @@ std::ostream &operator<<(std::ostream &os, const Point &point)
 }
 
 // Generates random points within a given area range.
-std::vector<Point> getRandomPoints(const size_t numPoints, const double minDistance, const double maxDistance)
+std::vector<Point> getRandomPoints(size_t numPoints, double minDistance, double maxDistance)
 {
     std::vector<Point> points;
 

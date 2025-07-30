@@ -2,10 +2,24 @@
 #define GENETIC_ALGO_UTILS_H
 
 #include <vector>
+#include <ostream>
 
-std::vector<std::vector<int>> getRandomRoutes(const size_t distMatrixSize, const size_t maxPackages);
-std::vector<std::vector<std::vector<int>>> getRandomPopulation(const size_t populationSize, const size_t distMatrixSize, const size_t maxPackages);
+// Struct representing on set of routes with its fitness level (total distance)
+struct Individual
+{
+    std::vector<std::vector<int>> routes;
+    double total_distance;
+
+    Individual(const std::vector<std::vector<int>> &r, double d)
+        : routes(r), total_distance(d) {}
+};
+std::ostream &operator<<(std::ostream &os, const Individual &individual);
+
+std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxPackages);
+std::vector<Individual> getRandomPopulation(const std::vector<std::vector<double>> distMatrix, size_t populationSize, size_t maxPackages);
 double routeDistancePerLocation(const std::vector<int> &route, const std::vector<std::vector<double>> &distMatrix);
 double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::vector<std::vector<double>> &distMatrix);
+std::vector<Individual> selectParents(const std::vector<Individual> population, size_t numOfParentCandidates, size_t numOfParents);
+Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, const std::vector<std::vector<double>> &distMatrix);
 
 #endif
