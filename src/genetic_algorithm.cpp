@@ -1,5 +1,6 @@
 #include "genetic_algorithm.h"
 #include "genetic_algo_utils.h"
+#include "create_child.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -32,7 +33,7 @@ std::vector<std::vector<int>> genetic_solver(
     std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
 
     // 3. & 4.
-    for (size_t generation = 0; generation < 2; generation++)
+    for (size_t generation = 0; generation < maxGenerations; generation++)
     {
         std::vector<Individual> newPopulation;
         newPopulation.reserve(populationSize);

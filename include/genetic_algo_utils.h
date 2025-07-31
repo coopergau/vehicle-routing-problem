@@ -20,6 +20,6 @@ std::vector<Individual> getRandomPopulation(const std::vector<std::vector<double
 double routeDistancePerLocation(const std::vector<int> &route, const std::vector<std::vector<double>> &distMatrix);
 double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::vector<std::vector<double>> &distMatrix);
 std::vector<Individual> selectParents(const std::vector<Individual> population, size_t numOfParentCandidates, size_t numOfParents);
-Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, const std::vector<std::vector<double>> &distMatrix);
+void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix);
 
 #endif

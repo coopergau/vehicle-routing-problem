@@ -1,15 +1,16 @@
 #include "genetic_algo_utils.h"
+#include "create_child.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
 #include <random>
 #include <iostream>
-#include <set>
 
 std::ostream &operator<<(std::ostream &os, const Individual &individual)
 {
     for (size_t i = 0; i < individual.routes.size(); ++i)
     {
+        // continue;
         os << "Route " << i << ": ";
         for (int loc : individual.routes[i])
         {
@@ -107,56 +108,7 @@ std::vector<Individual> selectParents(const std::vector<Individual> population, 
     return parents;
 }
 
-Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, const std::vector<std::vector<double>> &distMatrix)
+void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix)
 {
-    // Note this function assumes 2 parents
-    // Populate the child with routesFromParentA
-    // ------------------------------------------------------------make this just parentARoutes
-    Individual parentA = parents[0];
-
-    std::sort(parentA.routes.begin(), parentA.routes.end(),
-              [&distMatrix](const std::vector<int> &a, const std::vector<int> &b)
-              {
-                  double distA = routeDistancePerLocation(a, distMatrix);
-                  double distB = routeDistancePerLocation(b, distMatrix);
-                  return distA < distB;
-              });
-
-    std::vector<std::vector<int>> childRoutes(parentA.routes.begin(), parentA.routes.begin() + routesFromParentA);
-    double childRoutesDistance = distanceOfRoutes(childRoutes, distMatrix);
-    Individual child(childRoutes, childRoutesDistance);
-
-    // Fill in the rest with routes influenced by the order of parentB's routes
-    Individual parentB = parents[1];
-    std::set<int> childLocations;
-    for (const auto &route : child.routes)
-    {
-        for (int location : route)
-        {
-            if (location != 0)
-            {
-                childLocations.insert(location);
-            }
-        }
-    }
-
-    for (auto &route : parentB.routes)
-    {
-        route.erase(
-            std::remove_if(route.begin(), route.end(),
-                           [&childLocations](int location)
-                           { return childLocations.find(location) != childLocations.end(); }),
-            route.end());
-    }
-
-    parentB.routes.erase(
-        std::remove_if(parentB.routes.begin(), parentB.routes.end(),
-                       [](const std::vector<int> &route)
-                       { return route.size() <= 2; }),
-        parentB.routes.end());
-
-    child.routes.insert(child.routes.end(), parentB.routes.begin(), parentB.routes.end());
     child.total_distance = distanceOfRoutes(child.routes, distMatrix);
-
-    return child;
 }
