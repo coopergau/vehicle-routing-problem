@@ -14,6 +14,7 @@ Individual createChild(const std::vector<Individual> &parents, size_t routesFrom
     Individual child = parents[0];
     float mutationProb = 1;
     mutation(child, mutationProb, maxPackages, distMatrix);
+    twoOptSwap(child, distMatrix);
     return child;
 }
 
@@ -111,8 +112,14 @@ void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<
 
     while (destRouteIdx == sourceRouteIdx && destElementIdx == sourceElementIdx)
     {
-        std::uniform_int_distribution<int> routeDist(0, child.routes.size() - 1);
+        std::uniform_int_distribution<int> routeDist(0, child.routes.size());
         destRouteIdx = routeDist(gen);
+        if (destRouteIdx == child.routes.size())
+        {
+            child.routes.push_back({0, element, 0});
+            updateDistance(child, distMatrix);
+            return;
+        }
         std::uniform_int_distribution<int> elemDist(1, child.routes[destRouteIdx].size() - 2);
         destElementIdx = elemDist(gen);
     }
@@ -124,4 +131,35 @@ void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<
     }
     child.routes[destRouteIdx].insert(child.routes[destRouteIdx].begin() + destElementIdx, element);
     updateDistance(child, distMatrix);
+}
+
+void twoOptSwap(Individual &child, const std::vector<std::vector<double>> &distMatrix)
+{
+    std::vector<std::vector<int>> newRoutes;
+    for (const auto &route : child.routes)
+    {
+        if (route.size() < 5)
+        {
+            newRoutes.push_back(route);
+            continue;
+        }
+        std::vector<int> shortestRoute = route;
+        double shortestRouteLength = routeDistancePerLocation(route, distMatrix) * route.size();
+        for (size_t i = 1; i < route.size() - 1; i++)
+        {
+            for (size_t j = i + 2; j < route.size() - 1; j++)
+            {
+                std::vector<int> newRoute = route;
+                std::reverse(newRoute.begin() + i + 1, newRoute.begin() + j + 1);
+                double newRouteLength = routeDistancePerLocation(newRoute, distMatrix) * route.size();
+                if (newRouteLength < shortestRouteLength)
+                {
+                    shortestRoute = newRoute;
+                    shortestRouteLength = newRouteLength;
+                }
+            }
+        }
+        newRoutes.push_back(shortestRoute);
+    }
+    child.routes = newRoutes;
 }

@@ -8,4 +8,4 @@ sudo apt install libsfml-dev
 
 ## To Do
  - add tests for the fitness calculations
- - create a ga_utils file for all the functions in ga
+ - create a distance function for indivdual routes to avoid this routeDistancePerLocation(newRoute, distMatrix) * route.size()
