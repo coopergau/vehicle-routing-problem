@@ -7,5 +7,7 @@ Vehicle Routing Problem
 sudo apt install libsfml-dev
 
 ## To Do
+ - make a neareast neighbour think for the start instead of random
+
  - add tests for the fitness calculations
  - create a distance function for indivdual routes to avoid this routeDistancePerLocation(newRoute, distMatrix) * route.size()
