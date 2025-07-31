@@ -24,20 +24,20 @@ std::ostream &operator<<(std::ostream &os, const Individual &individual)
 
 std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxPackages)
 {
-    // vector fom 1 to size-1
+    // vector populateed from 1 to size-1
     std::vector<int> locations(distMatrixSize - 1);
     std::iota(locations.begin(), locations.end(), 1);
 
-    // rng
+    // randomly shuffle the vector
     std::random_device rd;
     std::mt19937 gen(rd());
     std::shuffle(locations.begin(), locations.end(), gen);
 
-    // split into routes
+    // split into routes of size 2 less than maxPackages to allow room for mutatuion
     std::vector<std::vector<int>> routes;
-    for (size_t i = 0; i < locations.size(); i += maxPackages)
+    for (size_t i = 0; i < locations.size(); i += maxPackages - 2)
     {
-        size_t end = std::min(locations.size(), i + maxPackages);
+        size_t end = std::min(locations.size(), i + maxPackages - 2);
         std::vector<int> route(locations.begin() + i, locations.begin() + end);
         route.insert(route.begin(), 0);
         route.push_back(0);
@@ -81,7 +81,7 @@ double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::
     return total_distance;
 }
 
-std::vector<Individual> selectParents(const std::vector<Individual> population, size_t numOfParentCandidates, size_t numOfParents)
+std::vector<Individual> selectParents(const std::vector<Individual> &population, size_t numOfParentCandidates, size_t numOfParents)
 {
     // Randomly select numOfParentCandidates individuals and choose the best one as a parent.
     // Repeat NumOfParents times.
@@ -111,4 +111,18 @@ std::vector<Individual> selectParents(const std::vector<Individual> population, 
 void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix)
 {
     child.total_distance = distanceOfRoutes(child.routes, distMatrix);
+}
+
+Individual bestFromPopulation(const std::vector<Individual> &population)
+{
+    Individual bestIndiv = population[0];
+    for (size_t i = 1; i < population.size(); i++)
+    {
+        if (population[i].total_distance < bestIndiv.total_distance)
+        {
+            bestIndiv = population[i];
+        }
+    }
+
+    return bestIndiv;
 }

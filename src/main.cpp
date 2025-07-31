@@ -13,7 +13,7 @@
 
 int main()
 {
-    const size_t numCustomers = 100;
+    const size_t numCustomers = 50;
     const size_t numDepots = 1;
     const size_t maxPackages = 10;
     const size_t populationSize = 100;
@@ -29,12 +29,12 @@ int main()
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
-    std::vector<std::vector<int>> genRoutes = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations);
+    std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations);
 
     std::vector<Point> locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());
     std::copy(customers.begin(), customers.end(), locations.begin() + numDepots);
-    exportMatrixToCSV(genRoutes, locations, exportFile);
+    exportRoutesProgressToCSV(genRoutesProgress, locations, exportFile);
 
     /* Working Clarke-Wright stuff
 

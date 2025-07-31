@@ -19,7 +19,8 @@ std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxP
 std::vector<Individual> getRandomPopulation(const std::vector<std::vector<double>> distMatrix, size_t populationSize, size_t maxPackages);
 double routeDistancePerLocation(const std::vector<int> &route, const std::vector<std::vector<double>> &distMatrix);
 double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::vector<std::vector<double>> &distMatrix);
-std::vector<Individual> selectParents(const std::vector<Individual> population, size_t numOfParentCandidates, size_t numOfParents);
+std::vector<Individual> selectParents(const std::vector<Individual> &population, size_t numOfParentCandidates, size_t numOfParents);
 void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix);
+Individual bestFromPopulation(const std::vector<Individual> &population);
 
 #endif

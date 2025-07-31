@@ -19,7 +19,7 @@
     7. Memetic Algorithm: Perform a 2-opt search in each route (check how this affects performance).
 8. Repeat Steps 2-7 until the max generations is hit.
 */
-std::vector<std::vector<int>> genetic_solver(
+std::vector<std::vector<std::vector<int>>> genetic_solver(
     const std::vector<std::vector<double>> &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,
@@ -31,6 +31,8 @@ std::vector<std::vector<int>> genetic_solver(
 
     // 1. & 2.
     std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
+    Individual bestIndividual = bestFromPopulation(population);
+    std::vector<std::vector<std::vector<int>>> bestRoutesProgress = {bestIndividual.routes};
 
     // 3. & 4.
     for (size_t generation = 0; generation < maxGenerations; generation++)
@@ -40,12 +42,20 @@ std::vector<std::vector<int>> genetic_solver(
         for (size_t family = 0; family < populationSize; family++)
         {
             std::vector<Individual> parents = selectParents(population, numOfParentCandidates, numOfParents);
-            Individual child = createChild(parents, routesFromParentOne, distMatrix);
+            Individual child = createChild(parents, routesFromParentOne, maxPackages, distMatrix);
             newPopulation.push_back(child);
-            std::cout << child;
         }
+        std::cout << generation;
+        std::cout << std::endl;
         population = newPopulation;
+
+        Individual bestFromCurrentGen = bestFromPopulation(population);
+        if (bestFromCurrentGen.total_distance < bestIndividual.total_distance)
+        {
+            bestIndividual = bestFromCurrentGen;
+            bestRoutesProgress.push_back(bestIndividual.routes);
+        }
     }
 
-    return {};
+    return bestRoutesProgress;
 }

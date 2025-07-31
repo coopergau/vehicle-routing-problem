@@ -8,13 +8,12 @@
 #include <random>
 #include <iostream>
 
-Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, const std::vector<std::vector<double>> &distMatrix)
+Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
     // For testing without the crossover the child will jsut be parentA
     Individual child = parents[0];
     float mutationProb = 1;
-    mutation(child, mutationProb, distMatrix);
-    std::cout << child;
+    mutation(child, mutationProb, maxPackages, distMatrix);
     return child;
 }
 
@@ -72,7 +71,7 @@ Individual routeCrossover(const std::vector<Individual> &parents, size_t routesF
     return child;
 }
 
-void mutation(Individual &child, float mutationProbability, const std::vector<std::vector<double>> &distMatrix)
+void mutation(Individual &child, float mutationProbability, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -81,15 +80,16 @@ void mutation(Individual &child, float mutationProbability, const std::vector<st
 
     if (randomNum <= mutationProbability)
     {
-        moveRandomElement(child);
-        updateDistance(child, distMatrix);
+        moveRandomElement(child, maxPackages, distMatrix);
     }
 }
 
-void moveRandomElement(Individual &child)
+void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
+    // In case the new routes don't fit the constraints
+    std::vector<std::vector<int>> originalRoutes = child.routes;
+
     // Randomly selects one location and moves it to a random new place in the routes.
-    // change so it cant move to the end or the beginning before or after the depot -------------------------------------------------------------
     static std::random_device rd;
     static std::mt19937 gen(rd());
 
@@ -107,14 +107,21 @@ void moveRandomElement(Individual &child)
     }
 
     int destRouteIdx = sourceRouteIdx;
-    int destElementIdx = destElementIdx;
+    int destElementIdx = sourceElementIdx;
 
-    while (destRouteIdx == sourceRouteIdx && destElementIdx == destElementIdx)
+    while (destRouteIdx == sourceRouteIdx && destElementIdx == sourceElementIdx)
     {
+        std::uniform_int_distribution<int> routeDist(0, child.routes.size() - 1);
         destRouteIdx = routeDist(gen);
         std::uniform_int_distribution<int> elemDist(1, child.routes[destRouteIdx].size() - 2);
         destElementIdx = elemDist(gen);
     }
 
+    if (child.routes[destRouteIdx].size() == maxPackages + 2)
+    {
+        child.routes = originalRoutes;
+        return;
+    }
     child.routes[destRouteIdx].insert(child.routes[destRouteIdx].begin() + destElementIdx, element);
+    updateDistance(child, distMatrix);
 }

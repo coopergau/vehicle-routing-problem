@@ -3,7 +3,7 @@
 
 #include <vector>
 
-std::vector<std::vector<int>> genetic_solver(
+std::vector<std::vector<std::vector<int>>> genetic_solver(
     const std::vector<std::vector<double>> &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,
