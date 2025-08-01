@@ -8,6 +8,8 @@
 
 #include <iostream> // only for std::cout
 
+#include "clarke_wright.h" // For trying to use the clarke-wright routes for the initial population
+
 /* Genetic Algorithm Steps:
 1. Start with some initial population of sets of routes
 2. Evaluate the fitness of each set of routes (total distance)
@@ -30,7 +32,23 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
     size_t routesFromParentOne = 6;
 
     // 1. & 2.
+    // Starting random
     std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
+
+    // Trying clarke wright as staring population
+    /*std::vector<Individual> population;
+    population.reserve(populationSize);
+    for (size_t i = 0; i < populationSize; i++)
+    {
+        auto [routesByIndex, routesProgress] = clarkeWrightSolver(distMatrix, maxPackages);
+        double totalDistance = distanceOfRoutes(routesByIndex, distMatrix);
+        population.emplace_back(routesByIndex, totalDistance);
+    }*/
+
+    // Starting with nearest neighbour
+    // Individual nearestNeighbourIndiv = nearestNeighbourRoutes(distMatrix, maxPackages);
+    // std::vector<Individual> population(populationSize, nearestNeighbourIndiv);
+
     Individual bestIndividual = bestFromPopulation(population);
     std::vector<std::vector<std::vector<int>>> bestRoutesProgress = {bestIndividual.routes};
 
@@ -45,8 +63,10 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
             Individual child = createChild(parents, routesFromParentOne, maxPackages, distMatrix);
             newPopulation.push_back(child);
         }
-        std::cout << generation;
-        std::cout << std::endl;
+        if (generation % 100 == 0)
+        {
+            std::cout << generation << std::endl;
+        }
         population = newPopulation;
 
         Individual bestFromCurrentGen = bestFromPopulation(population);
@@ -54,6 +74,7 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
         {
             bestIndividual = bestFromCurrentGen;
             bestRoutesProgress.push_back(bestIndividual.routes);
+            std::cout << "new best " << bestIndividual.total_distance << std::endl;
         }
     }
 

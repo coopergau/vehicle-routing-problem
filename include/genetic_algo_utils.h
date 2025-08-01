@@ -10,7 +10,7 @@ struct Individual
     std::vector<std::vector<int>> routes;
     double total_distance;
 
-    Individual(const std::vector<std::vector<int>> &r, double d)
+    Individual(const std::vector<std::vector<int>> &r = {}, double d = 0.0)
         : routes(r), total_distance(d) {}
 };
 std::ostream &operator<<(std::ostream &os, const Individual &individual);
@@ -22,5 +22,6 @@ double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::
 std::vector<Individual> selectParents(const std::vector<Individual> &population, size_t numOfParentCandidates, size_t numOfParents);
 void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix);
 Individual bestFromPopulation(const std::vector<Individual> &population);
+Individual nearestNeighbourRoutes(const std::vector<std::vector<double>> &distMatrix, size_t maxPackages);
 
 #endif

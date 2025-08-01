@@ -60,7 +60,7 @@ std::vector<Individual> getRandomPopulation(const std::vector<std::vector<double
     return population;
 }
 
-// Route fitness = route distance / nummber of locations in route
+// Route fitness = route distance / number of locations in route (try making it number of locations - 2 depots)
 double routeDistancePerLocation(const std::vector<int> &route, const std::vector<std::vector<double>> &distMatrix)
 {
     double distance = 0.0;
@@ -125,4 +125,56 @@ Individual bestFromPopulation(const std::vector<Individual> &population)
     }
 
     return bestIndiv;
+}
+
+Individual nearestNeighbourRoutes(const std::vector<std::vector<double>> &distMatrix, size_t maxPackages)
+{
+    std::vector<int> unUsedLocations(distMatrix.size() - 1);
+    std::iota(unUsedLocations.begin(), unUsedLocations.end(), 1);
+    std::vector<std::vector<int>> routes = {};
+
+    while (!unUsedLocations.empty())
+    {
+        int lastLoc;
+        bool newRoute = routes.size() == 0 || routes.back().size() == maxPackages;
+        if (newRoute)
+        {
+            lastLoc = 0;
+        }
+        else
+        {
+            lastLoc = routes.back().back();
+        }
+
+        int minLoc = 0;
+        double minDist = std::numeric_limits<double>::infinity();
+        for (const auto loc : unUsedLocations)
+        {
+            if (distMatrix[lastLoc][loc] < minDist)
+            {
+                minDist = distMatrix[lastLoc][loc];
+                minLoc = loc;
+            }
+        }
+
+        if (newRoute)
+        {
+            routes.push_back({minLoc});
+        }
+        else
+        {
+            routes.back().push_back(minLoc);
+        }
+        auto minLocIdx = std::find(unUsedLocations.begin(), unUsedLocations.end(), minLoc);
+        unUsedLocations.erase(minLocIdx);
+    }
+
+    for (auto &route : routes)
+    {
+        route.insert(route.begin(), 0);
+        route.push_back(0);
+    }
+
+    double routesDistance = distanceOfRoutes(routes, distMatrix);
+    return Individual(routes, routesDistance);
 }

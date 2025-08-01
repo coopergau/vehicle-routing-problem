@@ -1,6 +1,8 @@
 import csv
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib import cm
+import numpy as np
 
 def get_locations(file_name):
     with open(file_name) as routes_file:
@@ -41,6 +43,9 @@ def plot_routes_animation(locations, all_routes, interval=50):
     ax.set_ylim(0, 550)
     ax.set_aspect('equal', adjustable='box')
 
+    num_routes = max(len(routes) for routes in all_routes)
+    color_palette = cm.hsv(np.linspace(0, 1, num_routes))
+
     def animate(frame):
         # Clear previous routes
         ax.clear()
@@ -56,17 +61,18 @@ def plot_routes_animation(locations, all_routes, interval=50):
         current_routes = all_routes[frame]
         
         # Plot routes for current frame
-        for route in current_routes:
+        for route_idx, route in enumerate(current_routes):
+            color = color_palette[route_idx % len(color_palette)]
             for i in range(len(route[:-1])):
                 start = [x[route[i]], x[route[i+1]]]
                 next_point = [y[route[i]], y[route[i+1]]]
-                ax.plot(start, next_point, c="black")
+                ax.plot(start, next_point, c=color)
         
         ax.set_title(f"Iterations {frame+1}")
         
 
     # animate
-    frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] * 20
+    frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] * 40
     anim = animation.FuncAnimation(fig, animate, frames=frames_with_pause, 
                                  interval=interval, repeat=True)
     

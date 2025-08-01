@@ -13,11 +13,11 @@
 
 int main()
 {
-    const size_t numCustomers = 50;
+    const size_t numCustomers = 200;
     const size_t numDepots = 1;
     const size_t maxPackages = 10;
     const size_t populationSize = 100;
-    const size_t maxGenerations = 1000;
+    const size_t maxGenerations = 2000;
     const double minDistance = 100;
     const double maxDistance = 500;
     const double centerCoords = 300;

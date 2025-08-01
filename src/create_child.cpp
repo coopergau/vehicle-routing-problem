@@ -10,8 +10,16 @@
 
 Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
-    // For testing without the crossover the child will jsut be parentA
-    Individual child = parents[0];
+    // For testing without the crossover the child will just be the fittest parent
+    Individual child;
+    if (parents[0].total_distance < parents[1].total_distance)
+    {
+        child = parents[0];
+    }
+    else
+    {
+        child = parents[1];
+    }
     float mutationProb = 1;
     mutation(child, mutationProb, maxPackages, distMatrix);
     twoOptSwap(child, distMatrix);
@@ -76,7 +84,7 @@ void mutation(Individual &child, float mutationProbability, size_t maxPackages, 
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    std::uniform_real_distribution<float> dis(0.0f, 0.5f);
     float randomNum = dis(gen);
 
     if (randomNum <= mutationProbability)
