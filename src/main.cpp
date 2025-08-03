@@ -13,14 +13,14 @@
 
 int main()
 {
-    const size_t numCustomers = 200;
+    const size_t numCustomers = 80;
     const size_t numDepots = 1;
     const size_t maxPackages = 10;
     const size_t populationSize = 100;
-    const size_t maxGenerations = 2000;
+    const size_t maxGenerations = 1000;
     const double minDistance = 100;
-    const double maxDistance = 500;
-    const double centerCoords = 300;
+    const double maxDistance = 1000;
+    const double centerCoords = 550;
 
     const std::string exportFile = "visuals/routes.csv";
 
@@ -29,9 +29,17 @@ int main()
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations);
 
-    std::vector<Point> locations(numDepots + numCustomers);
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
+
+    std::vector<Point>
+        locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());
     std::copy(customers.begin(), customers.end(), locations.begin() + numDepots);
     exportRoutesProgressToCSV(genRoutesProgress, locations, exportFile);

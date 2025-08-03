@@ -7,93 +7,115 @@
 #include <algorithm>
 #include <random>
 #include <iostream>
+#include <unordered_set>
 
 Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
     // For testing without the crossover the child will just be the fittest parent
     Individual child;
+    Individual parentA;
+    Individual parentB;
     if (parents[0].total_distance < parents[1].total_distance)
     {
-        child = parents[0];
+        parentA = parents[0];
+        parentB = parents[1];
     }
     else
     {
-        child = parents[1];
+        parentB = parents[0];
+        parentA = parents[1];
     }
-    float mutationProb = 1;
-    mutation(child, mutationProb, maxPackages, distMatrix);
+    float mutationProb = 0.5;
+
+    child = routeCrossover(parentA, parentB, maxPackages, distMatrix);
+    mutation(child, mutationProb, maxPackages);
     twoOptSwap(child, distMatrix);
+    updateDistance(child, distMatrix);
     return child;
 }
 
-Individual routeCrossover(const std::vector<Individual> &parents, size_t routesFromParentA, const std::vector<std::vector<double>> &distMatrix)
+Individual routeCrossover(const Individual &parentA, const Individual &parentB, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
 {
-    // Note this function assumes 2 parents
-    // Populate the child with routesFromParentA
-    // ------------------------------------------------------------make this just parentARoutes
-    Individual parentA = parents[0];
+    std::unordered_set<int> used;
+    std::vector<std::vector<int>> childRoutes;
 
-    std::sort(parentA.routes.begin(), parentA.routes.end(),
-              [&distMatrix](const std::vector<int> &a, const std::vector<int> &b)
-              {
-                  double distA = routeDistancePerLocation(a, distMatrix);
-                  double distB = routeDistancePerLocation(b, distMatrix);
-                  return distA < distB;
-              });
-
-    std::vector<std::vector<int>> childRoutes(parentA.routes.begin(), parentA.routes.begin() + routesFromParentA);
-    double childRoutesDistance = distanceOfRoutes(childRoutes, distMatrix);
-    Individual child(childRoutes, childRoutesDistance);
-
-    // Fill in the rest with routes influenced by the order of parentB's routes
-    Individual parentB = parents[1];
-    std::set<int> childLocations;
-    for (const auto &route : child.routes)
+    // Copy half of the routes from parentA
+    for (size_t i = 0; i < parentA.routes.size() / 2; ++i)
     {
-        for (int location : route)
+        childRoutes.push_back(parentA.routes[i]);
+        for (int node : parentA.routes[i])
         {
-            if (location != 0)
+            used.insert(node);
+        }
+    }
+
+    // Fill remaining from parentB
+    for (const auto &route : parentB.routes)
+    {
+        std::vector<int> newRoute;
+        for (int node : route)
+        {
+            if (used.count(node) == 0)
             {
-                childLocations.insert(location);
+                newRoute.push_back(node);
+                used.insert(node);
+            }
+        }
+        if (!newRoute.empty())
+        {
+            newRoute.push_back(0);
+            newRoute.insert(newRoute.begin(), 0);
+            childRoutes.push_back(newRoute);
+        }
+    }
+
+    // Check if combining any routes saves on distance
+    for (size_t i = 0; i < childRoutes.size() - 1; ++i)
+    {
+        for (size_t j = i + 1; j < childRoutes.size(); ++j)
+        {
+            if (childRoutes[i].size() + childRoutes[j].size() <= maxPackages + 2)
+            {
+                double distA = routeDistancePerLocation(childRoutes[i], distMatrix) * childRoutes[i].size();
+                double distB = routeDistancePerLocation(childRoutes[j], distMatrix) * childRoutes[j].size();
+                double sumOfSeperateDistances = distA + distB;
+
+                std::vector<int> combinedRoute = {0};
+                combinedRoute.insert(combinedRoute.end(), childRoutes[i].begin() + 1, childRoutes[i].end() - 1);
+                combinedRoute.insert(combinedRoute.end(), childRoutes[j].begin() + 1, childRoutes[j].end() - 1);
+                combinedRoute.push_back(0);
+                double combinedDistance = routeDistancePerLocation(combinedRoute, distMatrix);
+
+                if (combinedDistance < sumOfSeperateDistances)
+                {
+                    childRoutes.erase(childRoutes.begin() + j);
+                    childRoutes.erase(childRoutes.begin() + i);
+                    childRoutes.push_back(combinedRoute);
+
+                    i = -1;
+                    break;
+                }
             }
         }
     }
 
-    for (auto &route : parentB.routes)
-    {
-        route.erase(
-            std::remove_if(route.begin(), route.end(),
-                           [&childLocations](int location)
-                           { return childLocations.find(location) != childLocations.end(); }),
-            route.end());
-    }
-
-    parentB.routes.erase(
-        std::remove_if(parentB.routes.begin(), parentB.routes.end(),
-                       [](const std::vector<int> &route)
-                       { return route.size() <= 2; }),
-        parentB.routes.end());
-
-    child.routes.insert(child.routes.end(), parentB.routes.begin(), parentB.routes.end());
-    child.total_distance = distanceOfRoutes(child.routes, distMatrix);
-
-    return child;
+    return Individual(childRoutes);
 }
 
-void mutation(Individual &child, float mutationProbability, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
+void mutation(Individual &child, float mutationProbability, size_t maxPackages)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 0.5f);
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
     float randomNum = dis(gen);
 
     if (randomNum <= mutationProbability)
     {
-        moveRandomElement(child, maxPackages, distMatrix);
+        moveRandomElement(child, maxPackages);
     }
 }
 
-void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
+void moveRandomElement(Individual &child, size_t maxPackages)
 {
     // In case the new routes don't fit the constraints
     std::vector<std::vector<int>> originalRoutes = child.routes;
@@ -125,7 +147,6 @@ void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<
         if (destRouteIdx == child.routes.size())
         {
             child.routes.push_back({0, element, 0});
-            updateDistance(child, distMatrix);
             return;
         }
         std::uniform_int_distribution<int> elemDist(1, child.routes[destRouteIdx].size() - 2);
@@ -138,7 +159,6 @@ void moveRandomElement(Individual &child, size_t maxPackages, const std::vector<
         return;
     }
     child.routes[destRouteIdx].insert(child.routes[destRouteIdx].begin() + destElementIdx, element);
-    updateDistance(child, distMatrix);
 }
 
 void twoOptSwap(Individual &child, const std::vector<std::vector<double>> &distMatrix)
@@ -152,18 +172,20 @@ void twoOptSwap(Individual &child, const std::vector<std::vector<double>> &distM
             continue;
         }
         std::vector<int> shortestRoute = route;
-        double shortestRouteLength = routeDistancePerLocation(route, distMatrix) * route.size();
+        double shortestRouteLength = routeDistancePerLocation(route, distMatrix);
         for (size_t i = 1; i < route.size() - 1; i++)
         {
             for (size_t j = i + 2; j < route.size() - 1; j++)
             {
                 std::vector<int> newRoute = route;
                 std::reverse(newRoute.begin() + i + 1, newRoute.begin() + j + 1);
-                double newRouteLength = routeDistancePerLocation(newRoute, distMatrix) * route.size();
+                double newRouteLength = routeDistancePerLocation(newRoute, distMatrix);
                 if (newRouteLength < shortestRouteLength)
                 {
                     shortestRoute = newRoute;
                     shortestRouteLength = newRouteLength;
+                    i = 1;
+                    j = i + 2;
                 }
             }
         }

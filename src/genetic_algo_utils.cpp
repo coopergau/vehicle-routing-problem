@@ -136,7 +136,7 @@ Individual nearestNeighbourRoutes(const std::vector<std::vector<double>> &distMa
     while (!unUsedLocations.empty())
     {
         int lastLoc;
-        bool newRoute = routes.size() == 0 || routes.back().size() == maxPackages;
+        bool newRoute = routes.size() == 0 || routes.back().size() == maxPackages / 2;
         if (newRoute)
         {
             lastLoc = 0;

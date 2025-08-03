@@ -33,14 +33,16 @@ def get_routes(file_name):
     
     return all_routes
 
-def plot_routes_animation(locations, all_routes, interval=50):
+def plot_routes_animation(locations, all_routes, interval=1000):
     # Get ordered location coords
     x = [location[0] for location in locations]
     y = [location[1] for location in locations]
 
+    visual_limits = max(x + y)
+
     fig, ax = plt.subplots(figsize=(10, 10))
-    ax.set_xlim(0, 550)
-    ax.set_ylim(0, 550)
+    ax.set_xlim(0, visual_limits)
+    ax.set_ylim(0, visual_limits)
     ax.set_aspect('equal', adjustable='box')
 
     num_routes = max(len(routes) for routes in all_routes)
@@ -49,8 +51,8 @@ def plot_routes_animation(locations, all_routes, interval=50):
     def animate(frame):
         # Clear previous routes
         ax.clear()
-        ax.set_xlim(0, 550)
-        ax.set_ylim(0, 550)
+        ax.set_xlim(0, visual_limits)
+        ax.set_ylim(0, visual_limits)
         ax.set_aspect('equal', adjustable='box')
         
         # Plot locations
@@ -63,6 +65,7 @@ def plot_routes_animation(locations, all_routes, interval=50):
         # Plot routes for current frame
         for route_idx, route in enumerate(current_routes):
             color = color_palette[route_idx % len(color_palette)]
+            color = "black"
             for i in range(len(route[:-1])):
                 start = [x[route[i]], x[route[i+1]]]
                 next_point = [y[route[i]], y[route[i+1]]]
@@ -72,7 +75,7 @@ def plot_routes_animation(locations, all_routes, interval=50):
         
 
     # animate
-    frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] * 40
+    frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] #* 40
     anim = animation.FuncAnimation(fig, animate, frames=frames_with_pause, 
                                  interval=interval, repeat=True)
     

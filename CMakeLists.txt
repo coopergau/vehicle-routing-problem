@@ -3,9 +3,11 @@ project(vrp)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(OpenMP REQUIRED)
+
 add_executable(vrp src/main.cpp src/utils.cpp src/clarke_wright.cpp src/genetic_algorithm.cpp src/genetic_algo_utils.cpp src/create_child.cpp)
 
-target_link_libraries(vrp sfml-graphics sfml-window sfml-system)
+target_link_libraries(vrp sfml-graphics sfml-window sfml-system OpenMP::OpenMP_CXX)
 include_directories(include)
 
 # Stuff for tests

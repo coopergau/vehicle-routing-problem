@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 #include <random>
+#include <omp.h>
 
 #include <iostream> // only for std::cout
 
@@ -33,21 +34,28 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
 
     // 1. & 2.
     // Starting random
-    std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
+    // std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
 
-    // Trying clarke wright as staring population
+    // Population clarkewright
     /*std::vector<Individual> population;
     population.reserve(populationSize);
-    for (size_t i = 0; i < populationSize; i++)
+    for (size_t i = 0; i < populationSize / 2; i++)
     {
         auto [routesByIndex, routesProgress] = clarkeWrightSolver(distMatrix, maxPackages);
         double totalDistance = distanceOfRoutes(routesByIndex, distMatrix);
+        std::cout << "Initial distance: " << totalDistance << std::endl;
         population.emplace_back(routesByIndex, totalDistance);
-    }*/
+    }
+
+    std::vector<Individual> randomPopulation = getRandomPopulation(distMatrix, populationSize / 2, maxPackages);
+    population.insert(population.end(), randomPopulation.begin(), randomPopulation.end());*/
 
     // Starting with nearest neighbour
-    // Individual nearestNeighbourIndiv = nearestNeighbourRoutes(distMatrix, maxPackages);
-    // std::vector<Individual> population(populationSize, nearestNeighbourIndiv);
+    Individual nearestNeighbourIndiv = nearestNeighbourRoutes(distMatrix, maxPackages);
+    std::cout << "Initial distance: " << nearestNeighbourIndiv.total_distance << std::endl;
+    std::vector<Individual> population(populationSize, nearestNeighbourIndiv);
+
+    // population.insert(population.end(), NNpopulation.begin(), NNpopulation.end());
 
     Individual bestIndividual = bestFromPopulation(population);
     std::vector<std::vector<std::vector<int>>> bestRoutesProgress = {bestIndividual.routes};
@@ -55,13 +63,13 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
     // 3. & 4.
     for (size_t generation = 0; generation < maxGenerations; generation++)
     {
-        std::vector<Individual> newPopulation;
-        newPopulation.reserve(populationSize);
-        for (size_t family = 0; family < populationSize; family++)
+        std::vector<Individual> newPopulation(populationSize);
+#pragma omp parallel for
+        for (int family = 0; family < static_cast<int>(populationSize); ++family)
         {
             std::vector<Individual> parents = selectParents(population, numOfParentCandidates, numOfParents);
             Individual child = createChild(parents, routesFromParentOne, maxPackages, distMatrix);
-            newPopulation.push_back(child);
+            newPopulation[family] = child;
         }
         if (generation % 100 == 0)
         {
