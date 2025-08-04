@@ -12,8 +12,15 @@ struct Point
 };
 std::ostream &operator<<(std::ostream &os, const Point &point);
 
+// Struct for distance matrix
+struct Matrix
+{
+    std::vector<double> data;
+    std::vector<double *> rows;
+};
+
 std::vector<Point> getRandomPoints(size_t count, double minDistance, double maxDistance);
-std::vector<std::vector<double>> getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers);
+Matrix getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers);
 std::vector<std::vector<Point>> routeIndicesToLocations(
     const std::vector<std::vector<int>> routesByIndex,
     const std::vector<Point> depots,

@@ -1,5 +1,6 @@
 #include "create_child.h"
 #include "genetic_algo_utils.h"
+#include "utils.h"
 #include <vector>
 #include <set>
 
@@ -9,7 +10,7 @@
 #include <iostream>
 #include <unordered_set>
 
-Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
+Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const Matrix &distMatrix)
 {
     // For testing without the crossover the child will just be the fittest parent
     Individual child;
@@ -34,7 +35,7 @@ Individual createChild(const std::vector<Individual> &parents, size_t routesFrom
     return child;
 }
 
-Individual routeCrossover(const Individual &parentA, const Individual &parentB, size_t maxPackages, const std::vector<std::vector<double>> &distMatrix)
+Individual routeCrossover(const Individual &parentA, const Individual &parentB, size_t maxPackages, const Matrix &distMatrix)
 {
     std::unordered_set<int> used;
     std::vector<std::vector<int>> childRoutes;
@@ -161,7 +162,7 @@ void moveRandomElement(Individual &child, size_t maxPackages)
     child.routes[destRouteIdx].insert(child.routes[destRouteIdx].begin() + destElementIdx, element);
 }
 
-void twoOptSwap(Individual &child, const std::vector<std::vector<double>> &distMatrix)
+void twoOptSwap(Individual &child, const Matrix &distMatrix)
 {
     std::vector<std::vector<int>> newRoutes;
     for (const auto &route : child.routes)

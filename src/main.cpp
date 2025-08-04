@@ -27,7 +27,7 @@ int main()
     std::vector<Point>
         depots = {{centerCoords, centerCoords}};
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
-    std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
+    Matrix distanceMatrix = getDistanceMatrix(depots, customers);
 
     auto start = std::chrono::high_resolution_clock::now();
 

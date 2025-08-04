@@ -37,7 +37,7 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWri
 
         std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
         std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
-        std::vector<std::vector<double>> distanceMatrix = getDistanceMatrix(depots, customers);
+        Matrix distanceMatrix = getDistanceMatrix(depots, customers);
 
         auto [routes, routesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
 

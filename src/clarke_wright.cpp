@@ -13,17 +13,17 @@
     - Starts with the one depot at the first row and col of matrix.
 */
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
-clarkeWrightSolver(const std::vector<std::vector<double>> &distMatrix, const size_t maxPackages)
+clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages)
 {
     // 1. Create savings list and order by descending savings amounts
     std::vector<std::tuple<int, int, double>> savings;
 
-    size_t numLocations = distMatrix.size();
+    size_t numLocations = distMatrix.rows.size();
     for (int i = 1; i < numLocations; i++)
     {
         for (int j = i + 1; j < numLocations; j++)
         {
-            double saving = distMatrix[0][i] + distMatrix[0][j] - distMatrix[i][j];
+            double saving = distMatrix.rows[0][i] + distMatrix.rows[0][j] - distMatrix.rows[i][j];
             savings.emplace_back(i, j, saving);
         }
     }

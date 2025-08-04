@@ -1,5 +1,6 @@
 #include "genetic_algo_utils.h"
 #include "create_child.h"
+#include "utils.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -47,36 +48,41 @@ std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxP
     return routes;
 }
 
-std::vector<Individual> getRandomPopulation(const std::vector<std::vector<double>> distMatrix, size_t populationSize, size_t maxPackages)
+std::vector<Individual> getRandomPopulation(const Matrix &distMatrix, size_t populationSize, size_t maxPackages)
 {
     std::vector<Individual> population;
     population.reserve(populationSize);
     for (size_t i = 0; i < populationSize; ++i)
     {
-        std::vector<std::vector<int>> routes = getRandomRoutes(distMatrix.size(), maxPackages);
+        std::vector<std::vector<int>> routes = getRandomRoutes(distMatrix.rows.size(), maxPackages);
         double totalDistance = distanceOfRoutes(routes, distMatrix);
         population.emplace_back(routes, totalDistance);
     }
     return population;
 }
 
-// Route fitness = route distance / number of locations in route (try making it number of locations - 2 depots)
-double routeDistancePerLocation(const std::vector<int> &route, const std::vector<std::vector<double>> &distMatrix)
+double routeDistance(const std::vector<int> &route, const Matrix &distMatrix)
 {
     double distance = 0.0;
     for (size_t i = 0; i < route.size() - 1; ++i)
     {
-        distance += distMatrix[route[i]][route[i + 1]];
+        distance += distMatrix.rows[route[i]][route[i + 1]];
     }
+    return distance;
+}
+
+double routeDistancePerLocation(const std::vector<int> &route, const Matrix &distMatrix)
+{
+    double distance = routeDistance(route, distMatrix);
     return distance / route.size();
 }
 
-double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const std::vector<std::vector<double>> &distMatrix)
+double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const Matrix &distMatrix)
 {
     double total_distance;
     for (const auto &route : routes)
     {
-        total_distance += routeDistancePerLocation(route, distMatrix) * route.size();
+        total_distance += routeDistance(route, distMatrix);
     }
     return total_distance;
 }
@@ -108,7 +114,7 @@ std::vector<Individual> selectParents(const std::vector<Individual> &population,
     return parents;
 }
 
-void updateDistance(Individual &child, const std::vector<std::vector<double>> &distMatrix)
+void updateDistance(Individual &child, const Matrix &distMatrix)
 {
     child.total_distance = distanceOfRoutes(child.routes, distMatrix);
 }
@@ -127,9 +133,9 @@ Individual bestFromPopulation(const std::vector<Individual> &population)
     return bestIndiv;
 }
 
-Individual nearestNeighbourRoutes(const std::vector<std::vector<double>> &distMatrix, size_t maxPackages)
+Individual nearestNeighbourRoutes(const Matrix &distMatrix, size_t maxPackages)
 {
-    std::vector<int> unUsedLocations(distMatrix.size() - 1);
+    std::vector<int> unUsedLocations(distMatrix.rows.size() - 1);
     std::iota(unUsedLocations.begin(), unUsedLocations.end(), 1);
     std::vector<std::vector<int>> routes = {};
 
@@ -150,9 +156,9 @@ Individual nearestNeighbourRoutes(const std::vector<std::vector<double>> &distMa
         double minDist = std::numeric_limits<double>::infinity();
         for (const auto loc : unUsedLocations)
         {
-            if (distMatrix[lastLoc][loc] < minDist)
+            if (distMatrix.rows[lastLoc][loc] < minDist)
             {
-                minDist = distMatrix[lastLoc][loc];
+                minDist = distMatrix.rows[lastLoc][loc];
                 minLoc = loc;
             }
         }

@@ -1,6 +1,8 @@
 #include "genetic_algorithm.h"
 #include "genetic_algo_utils.h"
 #include "create_child.h"
+#include "utils.h"
+#include "utils.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -23,7 +25,7 @@
 8. Repeat Steps 2-7 until the max generations is hit.
 */
 std::vector<std::vector<std::vector<int>>> genetic_solver(
-    const std::vector<std::vector<double>> &distMatrix,
+    const Matrix &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,
     const size_t maxGenerations)
