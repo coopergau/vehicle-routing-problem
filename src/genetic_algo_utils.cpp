@@ -24,7 +24,7 @@ std::ostream &operator<<(std::ostream &os, const Individual &individual)
     return os;
 }
 
-std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxPackages)
+std::vector<std::vector<int>> getRandomRoutes(const size_t distMatrixSize, const size_t maxPackages)
 {
     // vector populateed from 1 to size-1
     std::vector<int> locations(distMatrixSize - 1);
@@ -49,7 +49,7 @@ std::vector<std::vector<int>> getRandomRoutes(size_t distMatrixSize, size_t maxP
     return routes;
 }
 
-std::vector<Individual> getRandomPopulation(const Matrix &distMatrix, size_t populationSize, size_t maxPackages)
+std::vector<Individual> getRandomPopulation(const Matrix &distMatrix, const size_t populationSize, const size_t maxPackages)
 {
     std::vector<Individual> population;
     population.reserve(populationSize);
@@ -88,7 +88,7 @@ double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const Matri
     return total_distance;
 }
 
-std::vector<Individual> selectParents(const std::vector<Individual> &population, size_t numOfParentCandidates, size_t numOfParents)
+std::vector<Individual> selectParents(const std::vector<Individual> &population, const size_t numOfParentCandidates, const size_t numOfParents)
 {
     // Randomly select numOfParentCandidates individuals and choose the best one as a parent.
     // Repeat NumOfParents times.
@@ -134,7 +134,7 @@ Individual bestFromPopulation(const std::vector<Individual> &population)
     return bestIndiv;
 }
 
-Individual createNearestNeighbourIndividual(const Matrix &distMatrix, size_t maxPackages)
+Individual createNearestNeighbourIndividual(const Matrix &distMatrix, const size_t maxPackages)
 {
     std::vector<int> unUsedLocations(distMatrix.rows.size() - 1);
     std::iota(unUsedLocations.begin(), unUsedLocations.end(), 1);
@@ -186,7 +186,7 @@ Individual createNearestNeighbourIndividual(const Matrix &distMatrix, size_t max
     return Individual(routes, routesDistance);
 }
 
-Individual createCalrkeWrightIndividual(const Matrix &distMatrix, size_t maxPackages)
+Individual createCalrkeWrightIndividual(const Matrix &distMatrix, const size_t maxPackages)
 {
     auto [routes, routesProgress] = clarkeWrightSolver(distMatrix, maxPackages);
     double totalDistance = distanceOfRoutes(routes, distMatrix);

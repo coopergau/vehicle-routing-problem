@@ -19,7 +19,7 @@ struct Matrix
     std::vector<double *> rows;
 };
 
-std::vector<Point> getRandomPoints(size_t count, double minDistance, double maxDistance);
+std::vector<Point> getRandomPoints(const size_t count, const double minDistance, const double maxDistance);
 Matrix getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers);
 void exportMatrixToCSV(const std::vector<std::vector<int>> &routes, const std::vector<Point> &locations, const std::string &filename);
 void exportRoutesProgressToCSV(const std::vector<std::vector<std::vector<int>>> &routesProgress, const std::vector<Point> &locations, const std::string &filename);

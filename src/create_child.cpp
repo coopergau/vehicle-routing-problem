@@ -33,7 +33,7 @@ Individual createChild(const std::vector<Individual> &parents, const size_t maxP
     return child;
 }
 
-Individual routeCrossover(const Individual &parentA, const Individual &parentB, size_t maxPackages, const Matrix &distMatrix)
+Individual routeCrossover(const Individual &parentA, const Individual &parentB, const size_t maxPackages, const Matrix &distMatrix)
 {
     std::unordered_set<int> used;
     std::vector<std::vector<int>> childRoutes;
@@ -101,7 +101,7 @@ Individual routeCrossover(const Individual &parentA, const Individual &parentB, 
     return Individual(childRoutes);
 }
 
-void mutation(Individual &child, const float mutationProb, size_t maxPackages)
+void mutation(Individual &child, const float mutationProb, const size_t maxPackages)
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -114,7 +114,7 @@ void mutation(Individual &child, const float mutationProb, size_t maxPackages)
     }
 }
 
-void moveRandomElement(Individual &child, size_t maxPackages)
+void moveRandomElement(Individual &child, const size_t maxPackages)
 {
     // In case the new routes don't fit the constraints
     std::vector<std::vector<int>> originalRoutes = child.routes;
