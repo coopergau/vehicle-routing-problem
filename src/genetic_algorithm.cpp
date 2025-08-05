@@ -28,49 +28,75 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
     const Matrix &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,
-    const size_t maxGenerations)
+    const size_t maxGenerations,
+    StartingType startingType)
 {
     size_t numOfParentCandidates = 3;
     size_t numOfParents = 2; // The createChild function assumes 2 parents
-    size_t routesFromParentOne = 6;
 
-    // 1. & 2.
-    // Starting random
-    // std::vector<Individual> population = getRandomPopulation(distMatrix, populationSize, maxPackages);
-
-    // Population clarkewright
-    /*std::vector<Individual> population;
+    // Create 1st generation
+    std::vector<Individual> population;
     population.reserve(populationSize);
-    for (size_t i = 0; i < populationSize / 2; i++)
+
+    switch (startingType)
     {
-        auto [routesByIndex, routesProgress] = clarkeWrightSolver(distMatrix, maxPackages);
-        double totalDistance = distanceOfRoutes(routesByIndex, distMatrix);
-        std::cout << "Initial distance: " << totalDistance << std::endl;
-        population.emplace_back(routesByIndex, totalDistance);
+    case StartingType::ClarkeWright:
+    {
+        Individual clarkeWrightIndividual = createCalrkeWrightIndividual(distMatrix, maxPackages);
+
+        for (size_t i = 0; i < populationSize; ++i)
+        {
+            population.push_back(clarkeWrightIndividual);
+        }
+        break;
     }
+    case StartingType::NearestNeighbours:
+    {
+        Individual nearestNeighbourIndividual = createNearestNeighbourIndividual(distMatrix, maxPackages);
+        for (size_t i = 0; i < populationSize; ++i)
+        {
+            population.push_back(nearestNeighbourIndividual);
+        }
+        break;
+    }
+    case StartingType::Random:
+    {
+        population = getRandomPopulation(distMatrix, populationSize, maxPackages);
+    }
+    case StartingType::Mixed:
+    {
+        Individual clarkeWrightIndividual = createCalrkeWrightIndividual(distMatrix, maxPackages);
+        Individual nearestNeighbourIndividual = createNearestNeighbourIndividual(distMatrix, maxPackages);
 
-    std::vector<Individual> randomPopulation = getRandomPopulation(distMatrix, populationSize / 2, maxPackages);
-    population.insert(population.end(), randomPopulation.begin(), randomPopulation.end());*/
+        population = getRandomPopulation(distMatrix, populationSize / 3, maxPackages);
 
-    // Starting with nearest neighbour
-    Individual nearestNeighbourIndiv = nearestNeighbourRoutes(distMatrix, maxPackages);
-    std::cout << "Initial distance: " << nearestNeighbourIndiv.total_distance << std::endl;
-    std::vector<Individual> population(populationSize, nearestNeighbourIndiv);
-
-    // population.insert(population.end(), NNpopulation.begin(), NNpopulation.end());
+        size_t remaining = populationSize - population.size();
+        for (size_t i = 0; i < remaining; i += 2)
+        {
+            population.push_back(clarkeWrightIndividual);
+            if (i + 1 < remaining)
+            {
+                population.push_back(nearestNeighbourIndividual);
+            }
+        }
+        break;
+    }
+    default:
+        throw std::invalid_argument("Starting type must be ClarkeWright, NearestNeighbours, Random, or Mixed");
+    }
 
     Individual bestIndividual = bestFromPopulation(population);
     std::vector<std::vector<std::vector<int>>> bestRoutesProgress = {bestIndividual.routes};
 
-    // 3. & 4.
+    // Create the next generations
     for (size_t generation = 0; generation < maxGenerations; generation++)
     {
         std::vector<Individual> newPopulation(populationSize);
 #pragma omp parallel for
-        for (int family = 0; family < static_cast<int>(populationSize); ++family)
+        for (size_t family = 0; family < populationSize; ++family)
         {
             std::vector<Individual> parents = selectParents(population, numOfParentCandidates, numOfParents);
-            Individual child = createChild(parents, routesFromParentOne, maxPackages, distMatrix);
+            Individual child = createChild(parents, maxPackages, distMatrix);
             newPopulation[family] = child;
         }
         if (generation % 100 == 0)

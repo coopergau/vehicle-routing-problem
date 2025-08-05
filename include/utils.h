@@ -21,10 +21,6 @@ struct Matrix
 
 std::vector<Point> getRandomPoints(size_t count, double minDistance, double maxDistance);
 Matrix getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Point> &customers);
-std::vector<std::vector<Point>> routeIndicesToLocations(
-    const std::vector<std::vector<int>> routesByIndex,
-    const std::vector<Point> depots,
-    const std::vector<Point> customers);
 void exportMatrixToCSV(const std::vector<std::vector<int>> &routes, const std::vector<Point> &locations, const std::string &filename);
 void exportRoutesProgressToCSV(const std::vector<std::vector<std::vector<int>>> &routesProgress, const std::vector<Point> &locations, const std::string &filename);
 

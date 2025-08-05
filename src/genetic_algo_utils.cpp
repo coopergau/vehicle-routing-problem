@@ -1,6 +1,7 @@
 #include "genetic_algo_utils.h"
 #include "create_child.h"
 #include "utils.h"
+#include "clarke_wright.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -133,7 +134,7 @@ Individual bestFromPopulation(const std::vector<Individual> &population)
     return bestIndiv;
 }
 
-Individual nearestNeighbourRoutes(const Matrix &distMatrix, size_t maxPackages)
+Individual createNearestNeighbourIndividual(const Matrix &distMatrix, size_t maxPackages)
 {
     std::vector<int> unUsedLocations(distMatrix.rows.size() - 1);
     std::iota(unUsedLocations.begin(), unUsedLocations.end(), 1);
@@ -183,4 +184,11 @@ Individual nearestNeighbourRoutes(const Matrix &distMatrix, size_t maxPackages)
 
     double routesDistance = distanceOfRoutes(routes, distMatrix);
     return Individual(routes, routesDistance);
+}
+
+Individual createCalrkeWrightIndividual(const Matrix &distMatrix, size_t maxPackages)
+{
+    auto [routes, routesProgress] = clarkeWrightSolver(distMatrix, maxPackages);
+    double totalDistance = distanceOfRoutes(routes, distMatrix);
+    return Individual(routes, totalDistance);
 }

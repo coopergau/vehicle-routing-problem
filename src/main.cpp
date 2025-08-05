@@ -31,7 +31,7 @@ int main()
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations);
+    std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations, StartingType::NearestNeighbours);
 
     auto end = std::chrono::high_resolution_clock::now();
 

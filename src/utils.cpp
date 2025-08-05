@@ -81,32 +81,6 @@ Matrix getDistanceMatrix(const std::vector<Point> &depots, const std::vector<Poi
     return distanceMatrix;
 }
 
-// Take the routes by index and map them to their actual location coordinates to get routes by location.
-std::vector<std::vector<Point>> routeIndicesToLocations(
-    const std::vector<std::vector<int>> routesByIndex,
-    const std::vector<Point> depots,
-    const std::vector<Point> customers)
-{
-    std::vector<Point> allLocations;
-    allLocations.reserve(depots.size() + customers.size());
-    allLocations.insert(allLocations.end(), depots.begin(), depots.end());
-    allLocations.insert(allLocations.end(), customers.begin(), customers.end());
-
-    std::vector<std::vector<Point>> routes;
-
-    for (const auto &routeIndices : routesByIndex)
-    {
-        std::vector<Point> route;
-        for (int index : routeIndices)
-        {
-            route.push_back(allLocations[index]);
-        }
-        routes.push_back(route);
-    }
-
-    return routes;
-}
-
 void exportMatrixToCSV(const std::vector<std::vector<int>> &routes, const std::vector<Point> &locations, const std::string &filename)
 {
     std::ofstream file(filename);

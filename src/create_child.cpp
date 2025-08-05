@@ -10,7 +10,7 @@
 #include <iostream>
 #include <unordered_set>
 
-Individual createChild(const std::vector<Individual> &parents, size_t routesFromParentA, size_t maxPackages, const Matrix &distMatrix)
+Individual createChild(const std::vector<Individual> &parents, size_t maxPackages, const Matrix &distMatrix)
 {
     // For testing without the crossover the child will just be the fittest parent
     Individual child;

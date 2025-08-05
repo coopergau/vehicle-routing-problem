@@ -12,5 +12,5 @@ sudo apt install libsfml-dev
  - add comparisons between algos
  - compare with the same locations
 
- - add tests for the fitness calculations
- - create a distance function for indivdual routes to avoid this routeDistancePerLocation(newRoute, distMatrix) * route.size()
+ - put the distance in the animation
+ - consider how to handle progress printing

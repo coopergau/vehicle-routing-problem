@@ -24,6 +24,7 @@ double distanceOfRoutes(const std::vector<std::vector<int>> &routes, const Matri
 std::vector<Individual> selectParents(const std::vector<Individual> &population, size_t numOfParentCandidates, size_t numOfParents);
 void updateDistance(Individual &child, const Matrix &distMatrix);
 Individual bestFromPopulation(const std::vector<Individual> &population);
-Individual nearestNeighbourRoutes(const Matrix &distMatrix, size_t maxPackages);
+Individual createNearestNeighbourIndividual(const Matrix &distMatrix, size_t maxPackages);
+Individual createCalrkeWrightIndividual(const Matrix &distMatrix, size_t maxPackages);
 
 #endif
