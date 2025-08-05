@@ -10,9 +10,8 @@
 #include <iostream>
 #include <unordered_set>
 
-Individual createChild(const std::vector<Individual> &parents, size_t maxPackages, const Matrix &distMatrix)
+Individual createChild(const std::vector<Individual> &parents, const size_t maxPackages, const float mutationProb, const Matrix &distMatrix)
 {
-    // For testing without the crossover the child will just be the fittest parent
     Individual child;
     Individual parentA;
     Individual parentB;
@@ -26,7 +25,6 @@ Individual createChild(const std::vector<Individual> &parents, size_t maxPackage
         parentB = parents[0];
         parentA = parents[1];
     }
-    float mutationProb = 0.5;
 
     child = routeCrossover(parentA, parentB, maxPackages, distMatrix);
     mutation(child, mutationProb, maxPackages);
@@ -103,14 +101,14 @@ Individual routeCrossover(const Individual &parentA, const Individual &parentB, 
     return Individual(childRoutes);
 }
 
-void mutation(Individual &child, float mutationProbability, size_t maxPackages)
+void mutation(Individual &child, const float mutationProb, size_t maxPackages)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<float> dis(0.0f, 1.0f);
     float randomNum = dis(gen);
 
-    if (randomNum <= mutationProbability)
+    if (randomNum <= mutationProb)
     {
         moveRandomElement(child, maxPackages);
     }
@@ -174,9 +172,9 @@ void twoOptSwap(Individual &child, const Matrix &distMatrix)
         }
         std::vector<int> shortestRoute = route;
         double shortestRouteLength = routeDistancePerLocation(route, distMatrix);
-        for (size_t i = 1; i < route.size() - 1; i++)
+        for (size_t i = 1; i < route.size() - 1; ++i)
         {
-            for (size_t j = i + 2; j < route.size() - 1; j++)
+            for (size_t j = i + 2; j < route.size() - 1; ++j)
             {
                 std::vector<int> newRoute = route;
                 std::reverse(newRoute.begin() + i + 1, newRoute.begin() + j + 1);
@@ -185,8 +183,7 @@ void twoOptSwap(Individual &child, const Matrix &distMatrix)
                 {
                     shortestRoute = newRoute;
                     shortestRouteLength = newRouteLength;
-                    i = 1;
-                    j = i + 2;
+                    i = 0;
                 }
             }
         }

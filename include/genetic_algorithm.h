@@ -18,6 +18,7 @@ genetic_solver(
     const size_t maxPackages,
     const size_t populationSize,
     const size_t maxGenerations,
+    const float mutationProb,
     StartingType startingType = StartingType::ClarkeWright);
 
 #endif

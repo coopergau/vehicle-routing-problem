@@ -29,8 +29,13 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
     const size_t maxPackages,
     const size_t populationSize,
     const size_t maxGenerations,
-    StartingType startingType)
+    const float mutationProb,
+    const StartingType startingType)
 {
+    if (mutationProb < 0.0 || mutationProb > 1.0)
+    {
+        throw std::invalid_argument("mutationProb must be between 0 and 1, got: " + std::to_string(mutationProb));
+    }
     size_t numOfParentCandidates = 3;
     size_t numOfParents = 2; // The createChild function assumes 2 parents
 
@@ -89,14 +94,14 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
     std::vector<std::vector<std::vector<int>>> bestRoutesProgress = {bestIndividual.routes};
 
     // Create the next generations
-    for (size_t generation = 0; generation < maxGenerations; generation++)
+    for (size_t generation = 0; generation < maxGenerations; ++generation)
     {
         std::vector<Individual> newPopulation(populationSize);
 #pragma omp parallel for
         for (size_t family = 0; family < populationSize; ++family)
         {
             std::vector<Individual> parents = selectParents(population, numOfParentCandidates, numOfParents);
-            Individual child = createChild(parents, maxPackages, distMatrix);
+            Individual child = createChild(parents, maxPackages, mutationProb, distMatrix);
             newPopulation[family] = child;
         }
         if (generation % 100 == 0)

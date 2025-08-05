@@ -9,8 +9,6 @@
 
 /* Clarke-Wright algorithm
     - Returns a final version of the routes and the vector of the routes at each step of the algorithm.
-    - Does not alow for specifying the number of routes (vehicles).
-    - Starts with the one depot at the first row and col of matrix.
 */
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
 clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages)
@@ -45,7 +43,6 @@ clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages)
     return {routes, routesProgress};
 }
 
-// Seperated the function for easier testing
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
 processSavings(const std::vector<std::tuple<int, int, double>> &savings, size_t numCustomers, size_t maxPackages)
 {

@@ -18,6 +18,7 @@ int main()
     const size_t maxPackages = 10;
     const size_t populationSize = 100;
     const size_t maxGenerations = 1000;
+    const float mutationProb = 0.5;
     const double minDistance = 100;
     const double maxDistance = 1000;
     const double centerCoords = 550;
@@ -31,7 +32,7 @@ int main()
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations, StartingType::NearestNeighbours);
+    std::vector<std::vector<std::vector<int>>> genRoutesProgress = genetic_solver(distanceMatrix, maxPackages, populationSize, maxGenerations, mutationProb, StartingType::NearestNeighbours);
 
     auto end = std::chrono::high_resolution_clock::now();
 
