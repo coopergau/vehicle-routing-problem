@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <SFML/Graphics.hpp>
 #include <thread>
 #include <chrono>
 #include <limits>
