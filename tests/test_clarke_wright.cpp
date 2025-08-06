@@ -15,27 +15,27 @@
 */
 TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clarkeWrightSolver]")
 {
-    // Get a list of random customer amounts
-    int fuzzRounds = 50;
-    int minCustomers = 5;
-    int maxCustomers = 500;
+    const double minDistance = 100.0;
+    const double maxDistance = 500.0;
+    const size_t numDepots = 1;
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(minCustomers, maxCustomers);
+    size_t fuzzRounds = 50;
 
-    std::vector<int> customerAmounts(fuzzRounds);
-    for (int &numCustomers : customerAmounts)
+    size_t minCustomers = 5;
+    size_t maxCustomers = 200;
+
+    size_t minMaxPackages = 5;
+    size_t maxMaxPackages = 15;
+
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<size_t> customerDist(minCustomers, maxCustomers);
+    std::uniform_int_distribution<size_t> maxPackagesDist(minMaxPackages, maxMaxPackages);
+
+    for (size_t i = 0; i < fuzzRounds; ++i)
     {
-        numCustomers = dist(gen);
-    }
-
-    for (const auto numCustomers : customerAmounts)
-    {
-        const size_t numDepots = 1;
-        const size_t maxPackages = 10;
-        const double minDistance = 100.0;
-        const double maxDistance = 500.0;
+        const size_t numCustomers = customerDist(gen);
+        const size_t maxPackages = maxPackagesDist(gen);
 
         std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
         std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);

@@ -34,6 +34,15 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
     {
         throw std::invalid_argument("mutationProb must be between 0 and 1, got: " + std::to_string(mutationProb));
     }
+    if (maxPackages < 2)
+    {
+        throw std::invalid_argument("maxPackages must be greater than 2, got: " + std::to_string(maxPackages));
+    }
+    if (distMatrix.rows.size() == 0)
+    {
+        throw std::invalid_argument("distance matrix was empty");
+    }
+
     size_t numOfParentCandidates = 3;
     size_t numOfParents = 2; // The createChild function assumes 2 parents
 

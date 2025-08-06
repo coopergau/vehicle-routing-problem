@@ -46,7 +46,7 @@ TEST_CASE("Fuzz test that geneticSolver returns a proper solution", "[geneticSol
         const size_t maxPackages = maxPackagesDist(gen);
         const size_t populationSize = populationSizeDist(gen);
         const size_t generations = generationsDist(gen);
-        const size_t mutationProb = mutationDist(gen);
+        const float mutationProb = mutationDist(gen);
         StartingType randomType = static_cast<StartingType>(startingTypeDist(gen));
 
         std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
@@ -54,7 +54,7 @@ TEST_CASE("Fuzz test that geneticSolver returns a proper solution", "[geneticSol
         Matrix distanceMatrix = getDistanceMatrix(depots, customers);
 
         std::vector<std::vector<std::vector<int>>> genRoutesProgress = geneticSolver(
-            distanceMatrix, maxPackages, populationSize, maxGenerations, mutationProb, randomType);
+            distanceMatrix, maxPackages, populationSize, generations, mutationProb, randomType);
 
         std::vector<std::vector<int>> finalRoutes = genRoutesProgress.back();
 
@@ -103,4 +103,66 @@ TEST_CASE("Fuzz test that geneticSolver returns a proper solution", "[geneticSol
             REQUIRE(route.size() <= maxPackages + 2); // + 2 to account for the zero at beginning and end.
         }
     }
+}
+
+TEST_CASE("geneticSolver throws if mutation probability is greater than 1", "[geneticSolver]")
+{
+    const double minDistance = 100.0;
+    const double maxDistance = 500.0;
+    const size_t numDepots = 1;
+    const size_t numCustomers = 10;
+    const size_t maxPackages = 5;
+    const size_t populationSize = 10;
+    const size_t generations = 10;
+    const float mutationProb = 1.5;
+    StartingType startingType = StartingType::ClarkeWright;
+
+    std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
+    std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
+    Matrix distanceMatrix = getDistanceMatrix(depots, customers);
+
+    REQUIRE_THROWS(geneticSolver(
+        distanceMatrix, maxPackages, populationSize, generations, mutationProb, startingType));
+}
+TEST_CASE("geneticSolver throws if maxPackages < 2", "[geneticSolver]")
+{
+    const double minDistance = 100.0;
+    const double maxDistance = 500.0;
+    const size_t numDepots = 1;
+    const size_t numCustomers = 10;
+    const size_t maxPackages = 0;
+    const size_t populationSize = 10;
+    const size_t generations = 10;
+    const float mutationProb = 0.5;
+    StartingType startingType = StartingType::ClarkeWright;
+
+    std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
+    std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
+    Matrix distanceMatrix = getDistanceMatrix(depots, customers);
+
+    REQUIRE_THROWS(geneticSolver(
+        distanceMatrix, maxPackages, populationSize, generations, mutationProb, startingType));
+
+    REQUIRE_THROWS(geneticSolver(
+        distanceMatrix, maxPackages + 1, populationSize, generations, mutationProb, startingType));
+}
+
+TEST_CASE("geneticSolver throws if distance matrix is empty", "[geneticSolver]")
+{
+    const double minDistance = 100.0;
+    const double maxDistance = 500.0;
+    const size_t numDepots = 0;
+    const size_t numCustomers = 10;
+    const size_t maxPackages = 5;
+    const size_t populationSize = 10;
+    const size_t generations = 10;
+    const float mutationProb = 0.5;
+    StartingType startingType = StartingType::ClarkeWright;
+
+    std::vector<Point> depots = getRandomPoints(numDepots, minDistance, maxDistance);
+    std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
+    Matrix distanceMatrix;
+
+    REQUIRE_THROWS(geneticSolver(
+        distanceMatrix, maxPackages, populationSize, generations, mutationProb, startingType));
 }
