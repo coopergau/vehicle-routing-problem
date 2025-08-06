@@ -8,10 +8,8 @@
 #include <algorithm>
 #include <random>
 #include <omp.h>
-
-#include <iostream> // only for std::cout
-
-#include "clarke_wright.h" // For trying to use the clarke-wright routes for the initial population
+#include <iostream>
+#include "clarke_wright.h"
 
 /* Genetic Algorithm Steps:
 1. Start with some initial population of sets of routes
@@ -24,7 +22,7 @@
     7. Memetic Algorithm: Perform a 2-opt search in each route (check how this affects performance).
 8. Repeat Steps 2-7 until the max generations is hit.
 */
-std::vector<std::vector<std::vector<int>>> genetic_solver(
+std::vector<std::vector<std::vector<int>>> geneticSolver(
     const Matrix &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,
@@ -106,7 +104,7 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
         }
         if (generation % 100 == 0)
         {
-            std::cout << generation << std::endl;
+            // std::cout << generation << std::endl;
         }
         population = newPopulation;
 
@@ -115,7 +113,7 @@ std::vector<std::vector<std::vector<int>>> genetic_solver(
         {
             bestIndividual = bestFromCurrentGen;
             bestRoutesProgress.push_back(bestIndividual.routes);
-            std::cout << "new best " << bestIndividual.total_distance << std::endl;
+            // std::cout << "new best " << bestIndividual.total_distance << std::endl;
         }
     }
 

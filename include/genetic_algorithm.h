@@ -9,11 +9,12 @@ enum class StartingType
     ClarkeWright,
     NearestNeighbours,
     Random,
-    Mixed
+    Mixed,
+    COUNT
 };
 
 std::vector<std::vector<std::vector<int>>>
-genetic_solver(
+geneticSolver(
     const Matrix &distMatrix,
     const size_t maxPackages,
     const size_t populationSize,

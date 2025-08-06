@@ -4,13 +4,16 @@
 #include "utils.h"
 #include "clarke_wright.h"
 
+#include <iostream>
+#include <sstream>
+
 /* Fuzz test checks that:
     1. The routes generated include every customer (represented as their index) exactly once.
     2. Each route starts and ends with zero (depot).
     3. Zero does not occur anywhere else.
     4. No route is longer than the max length (maxPackages).
 */
-TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWrightSolver]")
+TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clarkeWrightSolver]")
 {
     // Get a list of random customer amounts
     int fuzzRounds = 50;
@@ -22,15 +25,14 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWri
     std::uniform_int_distribution<int> dist(minCustomers, maxCustomers);
 
     std::vector<int> customerAmounts(fuzzRounds);
-    for (int &amount : customerAmounts)
+    for (int &numCustomers : customerAmounts)
     {
-        amount = dist(gen);
+        numCustomers = dist(gen);
     }
 
     for (const auto numCustomers : customerAmounts)
     {
-        const int numDepots = 1;
-        const int numVehicles = 3;
+        const size_t numDepots = 1;
         const size_t maxPackages = 10;
         const double minDistance = 100.0;
         const double maxDistance = 500.0;
@@ -55,7 +57,19 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns proper routes", "[clarkeWri
         // Check that positive nums occur exactly once
         for (int i = 1; i <= numCustomers; i++)
         {
-            REQUIRE(count[i] == 1);
+            if (count[i] != 1)
+            {
+                std::ostringstream oss;
+                for (const auto &route : routes)
+                {
+                    for (const auto customer : route)
+                        oss << customer << " ";
+                    oss << "\n";
+                }
+                INFO("Routes:\n"
+                     << oss.str());
+                REQUIRE(count[i] == 1);
+            }
         }
 
         // Check that each route starts and ends with zero
