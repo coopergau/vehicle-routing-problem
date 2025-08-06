@@ -9,6 +9,7 @@ sudo apt install libsfml-dev
 
 ## To Do
  - add tests (revert)
+ - try with the depot in random location
  - add parellel to tests
  - add comparisons between algos
  - compare with the same locations
