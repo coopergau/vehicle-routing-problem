@@ -16,12 +16,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential
     
-    - name: Debug - List files
-      run: ls -la
-    
-    - name: Configure CMake
-      run: cmake -S . -B .
-    
     - name: Build
       run: make
     
