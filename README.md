@@ -13,6 +13,24 @@ Vehicle Routing Problem Solver
 ## Features
 
 
+## Requirements
+
+### Python API 
+- Python 3.x  
+
+### Raw C++ Code
+- OpenMP
+```bash
+sudo apt update
+sudo apt install libomp-dev
+```
+
+- Catch2
+```bash
+sudo apt update
+sudo apt install catch2
+```
+
 ## How to Run
 
 ### Python API
@@ -71,16 +89,15 @@ Vehicle Routing Problem Solver
 - **Catch2** (testing)
 - **OpenMP** (parallel computing)
 
-### WSL Installation
-sudo apt install libsfml-dev
 
 ## To Do
 clean
- - check which cmake files in the root can be removed
- - remove the visuals folder from github
+ - add the python part to a github workflow
+ - make main look nice
  - maybe remove the inlcudes bc of the include stuff in the cmake
  - clean #includes and comments
  - camelcase filename in the bindings
+ - check which cmake files in the root can be removed
  - maybe change repo name
  
  ## Benchmark Info
