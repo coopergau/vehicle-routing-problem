@@ -31,16 +31,6 @@ std::vector<std::vector<std::vector<int>>> completeSolverClarkeWright(
     Matrix distanceMatrix = getDistanceMatrix(depots, customers);
     auto [routesByIndex, routesProgress] = clarkeWrightSolver(distanceMatrix, maxPackages);
 
-    // Add the depot back in
-    for (auto &routes : routesProgress)
-    {
-        for (auto &route : routes)
-        {
-            route.insert(route.begin(), 0);
-            route.push_back(0);
-        }
-    }
-
     if (exportData)
     {
         std::vector<Point>

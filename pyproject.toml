@@ -1,0 +1,21 @@
+[build-system]
+requires = [
+  "scikit-build-core",
+  "pybind11"
+]
+build-backend = "scikit_build_core.build"
+
+
+[project]
+name = "vrp_solver"
+version = "0.1.0"
+description = "Vehicle routing problem solver module for using C++ algorithms in Python"
+authors = [{name = "Cooper Gau"}]
+requires-python = ">=3.7"
+dependencies = [
+    "matplotlib",
+]
+
+[tool.scikit-build]
+cmake.source-dir = "."
+cmake.args = ["-Dpybind11_DIR={find_pybind11}"]

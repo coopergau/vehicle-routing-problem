@@ -74,6 +74,7 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
     case StartingType::Random:
     {
         population = getRandomPopulation(distMatrix, populationSize, maxPackages);
+        break;
     }
     case StartingType::Mixed:
     {
@@ -111,10 +112,6 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
             Individual child = createChild(parents, maxPackages, mutationProb, distMatrix);
             newPopulation[family] = child;
         }
-        if (generation % 100 == 0)
-        {
-            // std::cout << generation << std::endl;
-        }
         population = newPopulation;
 
         Individual bestFromCurrentGen = bestFromPopulation(population);
@@ -122,7 +119,6 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
         {
             bestIndividual = bestFromCurrentGen;
             bestRoutesProgress.push_back(bestIndividual.routes);
-            // std::cout << "new best " << bestIndividual.total_distance << std::endl;
         }
     }
 

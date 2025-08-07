@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import cm
 import numpy as np
+import math
 
 def get_locations(file_name):
     with open(file_name) as routes_file:
@@ -33,17 +34,19 @@ def get_routes(file_name):
     
     return all_routes
 
+def get_distance(point1, point2):
+    x_distance = abs(point1[0] - point2[0])
+    y_distance = abs(point1[1] - point2[1])
+    return math.sqrt(x_distance**2 + y_distance**2)
+
 def plot_routes_animation(locations, all_routes, interval=1000, end_intervals = 40):
     # Get ordered location coords
     x = [location[0] for location in locations]
     y = [location[1] for location in locations]
 
-    visual_limits = max(x + y)
+    visual_limits = max(x + y) * 1.2
 
     fig, ax = plt.subplots(figsize=(10, 10))
-    ax.set_xlim(0, visual_limits)
-    ax.set_ylim(0, visual_limits)
-    ax.set_aspect('equal', adjustable='box')
 
     num_routes = max(len(routes) for routes in all_routes)
     color_palette = cm.hsv(np.linspace(0, 1, num_routes))
@@ -62,6 +65,7 @@ def plot_routes_animation(locations, all_routes, interval=1000, end_intervals = 
         # Get current group of routes
         current_routes = all_routes[frame]
         
+        distance = 0
         # Plot routes for current frame
         for route_idx, route in enumerate(current_routes):
             color = color_palette[route_idx % len(color_palette)]
@@ -70,9 +74,10 @@ def plot_routes_animation(locations, all_routes, interval=1000, end_intervals = 
                 start = [x[route[i]], x[route[i+1]]]
                 next_point = [y[route[i]], y[route[i+1]]]
                 ax.plot(start, next_point, c=color)
+
+                distance += get_distance(start, next_point)
         
-        ax.set_title(f"Iterations {frame+1}")
-        
+        ax.set_title(f"Distance: {distance:.2f}   Iterations {frame+1}")
 
     # animate
     frames_with_pause = list(range(len(all_routes))) + [len(all_routes)-1] * end_intervals

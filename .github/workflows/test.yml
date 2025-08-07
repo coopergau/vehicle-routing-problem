@@ -24,7 +24,7 @@ jobs:
         sudo cmake --build build --target install
 
     - name: Configure with CMake
-      run: cmake -S . -B build
+      run: cmake -S . -B build -DBUILD_PYTHON_BINDINGS=OFF
 
     - name: Build the project
       run: cmake --build build

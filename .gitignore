@@ -49,3 +49,6 @@ Thumbs.db
 
 # Personal debugging
 debug_text.txt
+
+# Venv
+venv/

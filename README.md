@@ -1,4 +1,71 @@
-Vehicle Routing Problem
+Vehicle Routing Problem Solver
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Vehicle Routing Problem](#vehicle-routing-problem)
+- [Features](#features)
+- [How to Run](#how-to-run)
+- [Examples](#examples)
+
+## Project Overview
+
+
+## Features
+
+
+## How to Run
+
+### Python API
+
+1. **Clone this repository:**
+    ```bash
+    git clone https://github.com/coopergau/vehicle-routing-problem
+    cd vehicle-routing-problem
+    ```
+
+2. **Install the API:**
+    ```bash
+    pip install .
+    ```
+
+3. **Use the example folder (or make your own):**
+    ```bash
+    cd example
+    ```
+
+4. **Run the example:**
+    ```bash
+    python3 main.py
+    ```
+
+### C++ Code
+
+1. **Clone this repository:**
+    ```bash
+    git clone https://github.com/coopergau/vehicle-routing-problem
+    cd vehicle-routing-problem
+    ```
+
+2. **Build with CMake:**
+    ```bash
+    mkdir build
+    cd build
+    cmake -DBUILD_PYTHON_BINDINGS=OFF ..
+    make
+    ```
+
+3. **Run the executable:**
+    ```bash
+    ./vrp
+    ```
+
+4. **Run the tests:**
+    ```bash
+    ./vrp_tests
+    ```
+
+## Examples
+
 
 ## Dependencies
 - **Catch2** (testing)
@@ -8,18 +75,22 @@ Vehicle Routing Problem
 sudo apt install libsfml-dev
 
 ## To Do
- - add tests (revert)
+performance stuff for resume
  - try with the depot in random location
  - add parellel to tests
- - add comparisons between algos
- - compare with the same locations
- - remove the tuple part from clarke right, jsut make it return the routes progress
+ - add comparisons between algos (same locations)
 
- - add errors for invalid function params (and test)
- - put the distance in the animation (python) make the genetic solver return the final distance (its good that the solver returns the distance but for every step in the animation takes longer so that can be just in python)
- - consider how to handle progress printing
- - clean #includes and comments
 
- - maybe remove the inlcudes bc of the include stuff in the cmake
+clean
  - check which cmake files in the root can be removed
  - remove the visuals folder from github
+ - maybe remove the inlcudes bc of the include stuff in the cmake
+ - clean #includes and comments
+ - camelcase filename in the bindings
+ - maybe change repo name
+ 
+ ## Install Steps
+  - clone repo
+  - pip install .
+  - cd example
+  - python3 main.py (or whatever you want)

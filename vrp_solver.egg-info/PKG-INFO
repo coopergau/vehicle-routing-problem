@@ -4,6 +4,8 @@ Version: 0.1.0
 Summary: Vehicle routing problem solver module for using C++ algorithms in Python
 Author: Cooper Gau
 Requires-Python: >=3.7
+Requires-Dist: matplotlib
 Dynamic: author
+Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary

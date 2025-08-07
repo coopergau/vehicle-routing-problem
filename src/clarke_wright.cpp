@@ -205,5 +205,14 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
         route.push_back(0);
     }
 
+    for (auto &routes : routesProgress)
+    {
+        for (auto &route : routes)
+        {
+            route.insert(route.begin(), 0);
+            route.push_back(0);
+        }
+    }
+
     return {routes, routesProgress};
 }
