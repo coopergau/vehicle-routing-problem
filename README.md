@@ -4,6 +4,7 @@ Vehicle Routing Problem Solver
 - [Project Overview](#project-overview)
 - [Vehicle Routing Problem](#vehicle-routing-problem)
 - [Features](#features)
+- [Requirements](#requirements)
 - [How to Run](#how-to-run)
 - [Examples](#examples)
 
@@ -19,52 +20,52 @@ Vehicle Routing Problem Solver
 - Python 3.x  
 
 ### Raw C++ Code
-- OpenMP
-```bash
-sudo apt update
-sudo apt install libomp-dev
-```
+1. **OpenMP for parallel computing**
+    ```bash
+    sudo apt update
+    sudo apt install libomp-dev
+    ```
 
-- Catch2
-```bash
-sudo apt update
-sudo apt install catch2
-```
+2. **Catch2 for testing**
+    ```bash
+    sudo apt update
+    sudo apt install catch2
+    ```
 
 ## How to Run
 
 ### Python API
 
-1. **Clone this repository:**
+1. **Clone this repository**
     ```bash
     git clone https://github.com/coopergau/vehicle-routing-problem
     cd vehicle-routing-problem
     ```
 
-2. **Install the API:**
+2. **Install the API**
     ```bash
     pip install .
     ```
 
-3. **Use the example folder (or make your own):**
+3. **Use the example folder (or make your own)**
     ```bash
     cd example
     ```
 
-4. **Run the example:**
+4. **Run the example**
     ```bash
     python3 main.py
     ```
 
-### C++ Code
+### Raw C++ Code
 
-1. **Clone this repository:**
+1. **Clone this repository**
     ```bash
     git clone https://github.com/coopergau/vehicle-routing-problem
     cd vehicle-routing-problem
     ```
 
-2. **Build with CMake:**
+2. **Build with CMake**
     ```bash
     mkdir build
     cd build
@@ -72,12 +73,12 @@ sudo apt install catch2
     make
     ```
 
-3. **Run the executable:**
+3. **Run the executable**
     ```bash
     ./vrp
     ```
 
-4. **Run the tests:**
+4. **Run the tests**
     ```bash
     ./vrp_tests
     ```
