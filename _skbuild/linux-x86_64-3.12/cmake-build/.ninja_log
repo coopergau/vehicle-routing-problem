@@ -1,0 +1,16 @@
+# ninja log v5
+348	3348	1754536754409494700	CMakeFiles/vrp.dir/src/main.cpp.o	4ae5d88ec7b03c7c
+343	3616	1754536754439091500	CMakeFiles/vrp_lib.dir/src/api_solvers.cpp.o	d0c3f29b70ac74a9
+333	4260	1754536755266270600	CMakeFiles/vrp_lib.dir/src/utils.cpp.o	43493dcd29e2ac63
+360	5188	1754536756150925600	CMakeFiles/vrp_tests.dir/tests/test_genetic_algorithm.cpp.o	365206fe01a18372
+337	5248	1754536756184047200	CMakeFiles/vrp_lib.dir/src/genetic_algorithm.cpp.o	94594451e4dff493
+341	5397	1754536756344743600	CMakeFiles/vrp_lib.dir/src/genetic_algo_utils.cpp.o	787bfa80a245dcfb
+340	5670	1754536756606456200	CMakeFiles/vrp_lib.dir/src/create_child.cpp.o	2708f0d11f5f41e5
+352	5703	1754536756634877200	CMakeFiles/vrp_tests.dir/tests/test_clarke_wright.cpp.o	caa023579cf3cbfd
+335	5747	1754536756680073400	CMakeFiles/vrp_lib.dir/src/clarke_wright.cpp.o	737af2f46fbadbb8
+5755	5970	1754536756883483900	libvrp_lib.a	42b1b51883b4cf67
+5971	6466	1754536757346536200	vrp	1dedeb0a5edf86d1
+5971	7357	1754536758176882700	vrp_tests	9881784604e07f2a
+345	12294	1754536762811319200	CMakeFiles/_vrp_core.dir/src/bindings.cpp.o	b39e0a1314696993
+12350	15985	1754536768066912700	_vrp_core.cpython-312-x86_64-linux-gnu.so	d2d3443f236fa657
+15987	16082	0	CMakeFiles/install.util	8e9d999c2534530c

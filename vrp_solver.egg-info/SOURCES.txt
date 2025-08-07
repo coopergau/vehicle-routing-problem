@@ -1,0 +1,10 @@
+README.md
+setup.py
+_skbuild/linux-x86_64-3.12/cmake-install/vrp_solver/__init__.py
+_skbuild/linux-x86_64-3.12/cmake-install/vrp_solver/_vrp_core.cpython-312-x86_64-linux-gnu.so
+_skbuild/linux-x86_64-3.12/cmake-install/vrp_solver/visualize.py
+vrp_solver.egg-info/PKG-INFO
+vrp_solver.egg-info/SOURCES.txt
+vrp_solver.egg-info/dependency_links.txt
+vrp_solver.egg-info/not-zip-safe
+vrp_solver.egg-info/top_level.txt

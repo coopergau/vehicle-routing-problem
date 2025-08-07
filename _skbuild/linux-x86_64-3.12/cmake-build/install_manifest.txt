@@ -1,0 +1,1 @@
+/mnt/c/Users/coope/Documents/coding_projects/vrp/_skbuild/linux-x86_64-3.12/cmake-install/vrp_solver/_vrp_core.cpython-312-x86_64-linux-gnu.so

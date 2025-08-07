@@ -7,22 +7,34 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenMP REQUIRED)
 find_package(Catch2 3 REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
-add_library(vrp_lib
-    src/utils.cpp
-    src/clarke_wright.cpp
-    src/genetic_algorithm.cpp
-    src/create_child.cpp
-    src/genetic_algo_utils.cpp
+add_library(vrp_lib STATIC
+src/utils.cpp
+src/clarke_wright.cpp
+src/genetic_algorithm.cpp
+src/create_child.cpp
+src/genetic_algo_utils.cpp
+src/api_solvers.cpp
 )
 
+set_target_properties(vrp_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(vrp_lib PUBLIC include)
+target_link_libraries(vrp_lib PUBLIC OpenMP::OpenMP_CXX)
+
+pybind11_add_module(_vrp_core src/bindings.cpp)
+target_link_libraries(_vrp_core PRIVATE vrp_lib)
 
 add_executable(vrp src/main.cpp)
-target_link_libraries(vrp PRIVATE vrp_lib OpenMP::OpenMP_CXX)
+target_link_libraries(vrp PRIVATE vrp_lib)
 
-add_executable(vrp_tests tests/test_clarke_wright.cpp tests/test_genetic_algorithm.cpp)
-target_link_libraries(vrp_tests PRIVATE vrp_lib Catch2::Catch2WithMain OpenMP::OpenMP_CXX)
+add_executable(vrp_tests
+    tests/test_clarke_wright.cpp
+    tests/test_genetic_algorithm.cpp
+)
+target_link_libraries(vrp_tests PRIVATE vrp_lib Catch2::Catch2WithMain)
 
 enable_testing()
 add_test(NAME vrp_tests COMMAND vrp_tests)
+
+install(TARGETS _vrp_core DESTINATION vrp_solver)

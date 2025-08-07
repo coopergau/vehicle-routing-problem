@@ -33,7 +33,7 @@ def get_routes(file_name):
     
     return all_routes
 
-def plot_routes_animation(locations, all_routes, interval=1000):
+def plot_routes_animation(locations, all_routes, interval=100):
     # Get ordered location coords
     x = [location[0] for location in locations]
     y = [location[1] for location in locations]
