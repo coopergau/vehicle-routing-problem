@@ -75,12 +75,6 @@ Vehicle Routing Problem Solver
 sudo apt install libsfml-dev
 
 ## To Do
-performance stuff for resume
- - try with the depot in random location
- - add parellel to tests
- - add comparisons between algos (same locations)
-
-
 clean
  - check which cmake files in the root can be removed
  - remove the visuals folder from github
@@ -101,7 +95,7 @@ const double minDistance = 100;
 const double maxDistance = 1000;
 const double centerCoords = 550;
 
-ran loop 10 times wice and got averages:
+ran loop 10 times twice and got average:
 
 Sequential: 12641ms
 Parallel: 3798.2ms
