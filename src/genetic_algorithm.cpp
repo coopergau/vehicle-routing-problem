@@ -28,7 +28,8 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
     const size_t populationSize,
     const size_t maxGenerations,
     const float mutationProb,
-    const StartingType startingType)
+    const StartingType startingType,
+    const bool p)
 {
     if (mutationProb < 0.0 || mutationProb > 1.0)
     {
@@ -105,7 +106,7 @@ std::vector<std::vector<std::vector<int>>> geneticSolver(
     for (size_t generation = 0; generation < maxGenerations; ++generation)
     {
         std::vector<Individual> newPopulation(populationSize);
-#pragma omp parallel for
+#pragma omp parallel for if (p)
         for (size_t family = 0; family < populationSize; ++family)
         {
             std::vector<Individual> parents = selectParents(population, numOfParentCandidates, numOfParents);

@@ -20,6 +20,7 @@ geneticSolver(
     const size_t populationSize,
     const size_t maxGenerations,
     const float mutationProb,
-    const StartingType startingType = StartingType::ClarkeWright);
+    const StartingType startingType = StartingType::ClarkeWright,
+    const bool p = false);
 
 #endif

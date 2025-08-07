@@ -89,8 +89,24 @@ clean
  - camelcase filename in the bindings
  - maybe change repo name
  
- ## Install Steps
-  - clone repo
-  - pip install .
-  - cd example
-  - python3 main.py (or whatever you want)
+ ## Benchmark Info
+ using 
+const size_t numCustomers = 50;
+const size_t numDepots = 1;
+const size_t maxPackages = 10;
+const size_t populationSize = 100;
+const size_t maxGenerations = 1000;
+const float mutationProb = 0.5;
+const double minDistance = 100;
+const double maxDistance = 1000;
+const double centerCoords = 550;
+
+ran loop 10 times wice and got averages:
+
+Sequential: 12641ms
+Parallel: 3798.2ms
+Speedup: 3.32816x
+
+Sequential: 12672.5ms
+Parallel: 3746.5ms
+Speedup: 3.38249x
