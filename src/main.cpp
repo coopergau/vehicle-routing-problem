@@ -26,14 +26,27 @@ int main()
 
     const std::string exportFile = "../example/routes.csv";
 
-    /*std::vector<std::vector<std::vector<int>>> clarkeWrightSolution = completeSolverClarkeWright(
+    std::vector<Point> depots = {{centerCoords, centerCoords}};
+    std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
+    Matrix distanceMatrix = getDistanceMatrix(depots, customers);
+
+    std::vector<double> locations_x;
+    std::vector<double> locations_y;
+
+    for (const auto &customer : customers)
+    {
+        locations_x.push_back(customer.x);
+        locations_y.push_back(customer.y);
+    }
+
+    std::vector<std::vector<std::vector<int>>> clarkeWrightProgression = completeSolverClarkeWright(
         centerCoords,
         centerCoords,
         locations_x,
         locations_y,
         maxPackages,
         true,
-        exportFile);*/
+        exportFile);
 
     /*std::vector<std::vector<std::vector<int>>> geneticSolution = completeSolverGenetic(
         centerCoords,
@@ -48,46 +61,10 @@ int main()
         StartingType::NearestNeighbours,
         exportFile);*/
 
-    // Comparing with and without parellel computation
-    std::vector<double> sequentialTimes;
-    std::vector<double> parallelTimes;
-    for (int i = 0; i < 10; ++i)
-    {
-        std::cout << i << std::endl;
-        std::vector<Point> depots = {{centerCoords, centerCoords}};
-        std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
-        Matrix distanceMatrix = getDistanceMatrix(depots, customers);
-
-        auto seqStart = std::chrono::high_resolution_clock::now();
-        std::vector<std::vector<std::vector<int>>> sequential = geneticSolver(
-            distanceMatrix, maxPackages, populationSize, maxGenerations, mutationProb, StartingType::Mixed, false);
-        auto seqEnd = std::chrono::high_resolution_clock::now();
-        auto seqDuration = std::chrono::duration_cast<std::chrono::milliseconds>(seqEnd - seqStart);
-        sequentialTimes.push_back(seqDuration.count());
-
-        std::cout << i << std::endl;
-
-        auto parStart = std::chrono::high_resolution_clock::now();
-        std::vector<std::vector<std::vector<int>>> parallel = geneticSolver(
-            distanceMatrix, maxPackages, populationSize, maxGenerations, mutationProb, StartingType::Mixed, true);
-        auto parEnd = std::chrono::high_resolution_clock::now();
-        auto parDuration = std::chrono::duration_cast<std::chrono::milliseconds>(parEnd - parStart);
-        parallelTimes.push_back(parDuration.count());
-    }
-
-    // Calculate statistics
-    double sequential_avg = std::accumulate(sequentialTimes.begin(), sequentialTimes.end(), 0.0) / sequentialTimes.size();
-    double parallel_avg = std::accumulate(parallelTimes.begin(), parallelTimes.end(), 0.0) / parallelTimes.size();
-
-    std::cout << "Sequential: " << sequential_avg << "ms" << std::endl;
-    std::cout << "Parallel: " << parallel_avg << "ms" << std::endl;
-    std::cout << "Speedup: " << sequential_avg / parallel_avg << "x" << std::endl;
-
-    /*std::vector<Point>
-        locations(numDepots + numCustomers);
+    std::vector<Point> locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());
     std::copy(customers.begin(), customers.end(), locations.begin() + numDepots);
-    exportRoutesProgressToCSV(genRoutesProgress, locations, exportFile);*/
+    exportRoutesProgressToCSV(clarkeWrightProgression, locations, exportFile);
 
     return 0;
 }
