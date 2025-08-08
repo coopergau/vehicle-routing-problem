@@ -65,6 +65,12 @@ Vehicle Routing Problem Solver
     cd vehicle-routing-problem
     ```
 
+1. **Install Dependencies**
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y build-essential cmake libomp-dev
+    ```
+
 2. **Build with CMake**
     ```bash
     mkdir build
