@@ -113,16 +113,20 @@ In practice, the genetic algorithm can result in a significant improvement when 
 ### Genetic Algorithm Evolution 
 #### Starting from random
 Significant improvement from initial random routes but much worse than the Clarke-Wright solution. 
+
 <img src="example/geneticRand.gif" width="500" alt="Genetic Random">
 
 #### Starting from nearest neighbours
 Decent improvement from initial nearest neighbour routes but still worse than the Clarke-Wright solution. 
+
 <img src="example/geneticNN.gif" width="500" alt="Genetic Nearest Neighbors">
 
 #### Starting from Clarke-Wright
 Only a minor improvement but slightly better than the Clarke-Wright solution.
+
 <img src="example/geneticCW.gif" width="500" alt="Genetic Clarke-Wright">
 
 #### Starting from mixed
 Sometimes the increase in diversity can result in a better solution, but in this case the result is the same as starting from the Clarke-Wright solution.
+
 <img src="example/geneticMixed.gif" width="500" alt="Genetic Mixed">
