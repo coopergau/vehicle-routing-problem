@@ -2,15 +2,12 @@ Vehicle Routing Problem Solver
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Features](#features)
 - [Requirements](#requirements)
 - [How to Run](#how-to-run)
 - [Examples](#examples)
 
 ## Project Overview
-
-
-## Features
+This project uses Python bindings to allow users to access C++ solvers for the vehicle routing problem.
 
 
 ## Requirements
@@ -84,3 +81,7 @@ Vehicle Routing Problem Solver
 
 ## Examples
 
+## To Do
+ - readme description
+ - gifs
+ - finish readme and dbt descriptions for pipeline project
