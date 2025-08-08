@@ -1,9 +1,11 @@
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 #include "api_solvers.h"
 #include "genetic_algorithm.h"
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
+
+// For accessing these functions in Python
 
 PYBIND11_MODULE(_vrp_core, m)
 {

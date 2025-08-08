@@ -1,8 +1,10 @@
-#include <vector>
-#include <stdexcept>
 #include "utils.h"
 #include "clarke_wright.h"
 #include "genetic_algorithm.h"
+#include <vector>
+#include <stdexcept>
+
+// Functions to be accessed in Python
 
 std::vector<std::vector<std::vector<int>>> completeSolverClarkeWright(
     const double &depot_x,

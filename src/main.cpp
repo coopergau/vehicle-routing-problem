@@ -1,3 +1,7 @@
+#include "utils.h"
+#include "clarke_wright.h"
+#include "genetic_algorithm.h"
+#include "api_solvers.h"
 #include <iostream>
 #include <vector>
 #include <random>
@@ -7,18 +11,13 @@
 #include <cmath>
 #include <omp.h>
 
-#include "utils.h"
-#include "clarke_wright.h"
-#include "genetic_algorithm.h"
-#include "api_solvers.h"
-
 int main()
 {
     const size_t numCustomers = 50;
     const size_t numDepots = 1;
     const size_t maxPackages = 10;
     const size_t populationSize = 100;
-    const size_t maxGenerations = 1000;
+    const size_t generations = 1000;
     const float mutationProb = 0.5;
     const double minDistance = 100;
     const double maxDistance = 1000;
@@ -61,7 +60,7 @@ int main()
         locations_y,
         maxPackages,
         populationSize,
-        maxGenerations,
+        generations,
         mutationProb,
         true,
         StartingType::NearestNeighbours,

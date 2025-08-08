@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-// Struct representing the position of a point that would be a drop off location.
+// Struct representing the position of a point that would be a location.
 struct Point
 {
     double x{};

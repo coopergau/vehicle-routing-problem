@@ -10,7 +10,6 @@ std::ostream &operator<<(std::ostream &os, const Individual &individual)
 {
     for (size_t i = 0; i < individual.routes.size(); ++i)
     {
-        // continue;
         os << "Route " << i << ": ";
         for (int loc : individual.routes[i])
         {

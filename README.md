@@ -84,32 +84,3 @@ Vehicle Routing Problem Solver
 
 ## Examples
 
-
-
-## To Do
-clean
- - maybe remove the inlcudes bc of the include stuff in the cmake
- - clean #includes and comments
- - check which cmake files in the root can be removed
- 
- ## Benchmark Info
- using 
-const size_t numCustomers = 50;
-const size_t numDepots = 1;
-const size_t maxPackages = 10;
-const size_t populationSize = 100;
-const size_t maxGenerations = 1000;
-const float mutationProb = 0.5;
-const double minDistance = 100;
-const double maxDistance = 1000;
-const double centerCoords = 550;
-
-ran loop 10 times twice and got average:
-
-Sequential: 12641ms
-Parallel: 3798.2ms
-Speedup: 3.32816x
-
-Sequential: 12672.5ms
-Parallel: 3746.5ms
-Speedup: 3.38249x

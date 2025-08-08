@@ -1,9 +1,10 @@
 #ifndef GENETIC_ALGORITHM_H
 #define GENETIC_ALGORITHM_H
 
-#include <vector>
 #include "utils.h"
+#include <vector>
 
+// Different starting types for geneticSolver. Mixed creates a population with one third coming from the other types.
 enum class StartingType
 {
     ClarkeWright,

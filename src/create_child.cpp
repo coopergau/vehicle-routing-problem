@@ -158,6 +158,8 @@ void moveRandomElement(Individual &child, const size_t maxPackages)
 
 void twoOptSwap(Individual &child, const Matrix &distMatrix)
 {
+    // Basically switches neighbouring locations and checks to see if distance is lower.
+    // Intended to "uncross" paths.
     std::vector<std::vector<int>> newRoutes;
     for (const auto &route : child.routes)
     {

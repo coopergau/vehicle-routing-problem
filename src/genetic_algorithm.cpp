@@ -2,25 +2,24 @@
 #include "genetic_algo_utils.h"
 #include "create_child.h"
 #include "utils.h"
-#include "utils.h"
+#include "clarke_wright.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
 #include <random>
 #include <omp.h>
 #include <iostream>
-#include "clarke_wright.h"
 
 /* Genetic Algorithm Steps:
-1. Start with some initial population of sets of routes
+1. Start with some initial population of sets of routes, dictated by startingType.
 2. Evaluate the fitness of each set of routes (total distance)
-3. Select the parents or the next generation via tournament style: For each parent randomly choose two possible candidates and select the one with the better fitness.
-4-7 are performed for each two parents right after they are selected
-    4. Copy the n best routes form the first parent to the child.
-    5. Fill in the rest of the locations based on the second parent.
-    6. Swap Mutation: With some small probability, randomly swap two locations in different routes.
-    7. Memetic Algorithm: Perform a 2-opt search in each route (check how this affects performance).
-8. Repeat Steps 2-7 until the max generations is hit.
+3. Select the parents or the next generation via tournament style: For each parent randomly choose three possible candidates and select the one with the better fitness.
+4-6 are performed for each two parents right after they are selected, in the createChild function.
+    4. Route Crossover: Copy half of the fittest parent's routes to intialize the child routes. Fill in the rest of the locations based on the second parent.
+       Check if combining any routes saves on distance.
+    5. Mutation: With some probability, randomly move one location to a different route.
+    6. Memetic Algorithm: Perform a 2-opt search in each route.
+7. Repeat Steps 2-6 until the maximum number of inted gnerations is hit.
 */
 std::vector<std::vector<std::vector<int>>> geneticSolver(
     const Matrix &distMatrix,

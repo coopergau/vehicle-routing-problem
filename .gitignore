@@ -52,3 +52,6 @@ debug_text.txt
 
 # Venv
 venv/
+
+# Benchmark info
+benchmarks.txt

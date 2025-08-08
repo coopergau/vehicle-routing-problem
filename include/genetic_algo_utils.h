@@ -5,7 +5,7 @@
 #include <ostream>
 struct Matrix;
 
-// Struct representing on set of routes with its fitness level (total distance)
+// Struct representing a set of routes with a fitness level (total distance)
 struct Individual
 {
     std::vector<std::vector<int>> routes;
