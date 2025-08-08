@@ -1,4 +1,4 @@
-Vehicle Routing Problem Solver
+# Vehicle Routing Problem Solver
 
 ## Table of Contents
 - [Project Overview](#project-overview)
