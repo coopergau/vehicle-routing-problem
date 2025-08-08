@@ -86,10 +86,6 @@ Vehicle Routing Problem Solver
 ## Examples
 
 
-## Dependencies
-- **Catch2** (testing)
-- **OpenMP** (parallel computing)
-
 
 ## To Do
 clean
