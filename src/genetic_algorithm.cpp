@@ -19,7 +19,7 @@
        Check if combining any routes saves on distance.
     5. Mutation: With some probability, randomly move one location to a different route.
     6. Memetic Algorithm: Perform a 2-opt search in each route.
-7. Repeat Steps 2-6 until the maximum number of inted gnerations is hit.
+7. Repeat Steps 2-6 until the maximum number of generations is hit.
 */
 std::vector<std::vector<std::vector<int>>> geneticSolver(
     const Matrix &distMatrix,
