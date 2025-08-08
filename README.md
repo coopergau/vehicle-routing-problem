@@ -42,6 +42,12 @@ Vehicle Routing Problem Solver
     cd vehicle-routing-problem
     ```
 
+1. **Install necessary dependencies**
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y catch2
+    ```
+
 2. **Install the API**
     ```bash
     pip install .
@@ -65,13 +71,13 @@ Vehicle Routing Problem Solver
     cd vehicle-routing-problem
     ```
 
-1. **Install Dependencies**
+2. **Install dependencies**
     ```bash
     sudo apt-get update
-    sudo apt-get install -y build-essential cmake libomp-dev
+    sudo apt-get install -y catch2 build-essential cmake libomp-dev
     ```
 
-2. **Build with CMake**
+3. **Build with CMake**
     ```bash
     mkdir build
     cd build
@@ -79,12 +85,12 @@ Vehicle Routing Problem Solver
     make
     ```
 
-3. **Run the executable**
+4. **Run the executable**
     ```bash
     ./vrp
     ```
 
-4. **Run the tests**
+5. **Run the tests**
     ```bash
     ./vrp_tests
     ```

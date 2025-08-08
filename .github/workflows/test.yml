@@ -16,8 +16,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y catch2 build-essential cmake libomp-dev
 
-    - name: Configure with CMake
-      run: cmake -S . -B build -DBUILD_PYTHON_BINDINGS=OFF
+    - name: Run with CMake
+      run: |
+        mkdir build
+        cd build
+        cmake -DBUILD_PYTHON_BINDINGS=OFF ..
+        make
 
     - name: Build the project
       run: cmake --build build
