@@ -25,7 +25,7 @@ In practice, the genetic algorithm can result in a significant improvement when 
 4. Any points not included in a route create their own route that consists of only that point.
 5. Add the depot to the beginning and ending of each route.
 
-## Genetic Alorithm Steps
+## Genetic Algorithm Steps
 1. Start with some initial population of sets of routes, dictated by startingType.
 2. Evaluate the fitness of each set of routes (total distance)
 3. Select the parents or the next generation via tournament style: For each parent randomly choose three possible candidates and select the one with the better fitness.
