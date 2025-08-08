@@ -9,18 +9,19 @@
 /* Clarke-Wright algorithm
     - Returns a final version of the routes and a vector of the routes at each step of the algorithm.
     - Steps:
-    1. Create savings list and order by descending savings amounts
-    2. Iterate through sorted savings list and do one of three things as long it does not create a route with more locations than maxPackages:
+    1. Pretend every location is in its own route.
+    2. Create savings list and order by descending savings amounts. One entry consists of two locations and the savings that would come from joining them.
+    3. Iterate through sorted savings list and do one of three things as long it does not create a route with more locations than maxPackages:
         - If both points i and j have not been included in a route create a new route by connecting them
         - If only one of i or j has been included in a route and it is not in the interior of the route, the link i-j will be added to the route
         - If both i and j have been included in a route and they are both not interior points, connect their routes
-    3. Any points not included in a route create their own route that consists of only that point.
-    4. Add the depot to the beginning and ending of each route.
+    4. Any points not included in a route create their own route that consists of only that point.
+    5. Add the depot to the beginning and ending of each route.
 */
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
 clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages)
 {
-    // 1.
+    // 1. & 2.
     std::vector<std::tuple<int, int, double>> savings;
 
     size_t numLocations = distMatrix.rows.size();
@@ -36,7 +37,7 @@ clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages)
     std::sort(savings.begin(), savings.end(), [](const auto &a, const auto &b)
               { return std::get<2>(a) > std::get<2>(b); });
 
-    // Steps 2-4 are done in ProcessSavings
+    // Steps 3-5 are done in ProcessSavings
     int numCustomers = numLocations - 1; // minus the one depot
     auto [routes, routesProgress] = processSavings(savings, numCustomers, maxPackages);
 
@@ -51,7 +52,7 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
     std::vector<bool> isEdgePoint(numCustomers + 1, false);
     std::unordered_map<int, int> pointToRoute; // Maps a point index to its route index
 
-    // 2.
+    // 3.
     for (const auto &s : savings)
     {
         int i = std::get<0>(s);
@@ -180,7 +181,7 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
         }
     }
 
-    // 3.
+    // 4.
     for (int i = 1; i <= numCustomers; i++)
     {
         if (pointToRoute.find(i) == pointToRoute.end())
@@ -191,7 +192,7 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
         }
     }
 
-    // 4.
+    // 5.
     for (auto &route : routes)
     {
         route.insert(route.begin(), 0);
