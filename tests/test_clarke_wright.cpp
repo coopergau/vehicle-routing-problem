@@ -60,6 +60,8 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clark
             if (count[i] != 1)
             {
                 std::ostringstream oss;
+                oss << "count[i] is " << count[i];
+                oss << "\n";
                 for (const auto &route : routes)
                 {
                     for (const auto customer : route)
@@ -68,8 +70,8 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clark
                 }
                 INFO("Routes:\n"
                      << oss.str());
-                REQUIRE(count[i] == 1);
             }
+            REQUIRE(count[i] == 1);
         }
 
         // Check that each route starts and ends with zero

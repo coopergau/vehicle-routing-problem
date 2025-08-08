@@ -30,6 +30,12 @@ int main()
     std::vector<Point> customers = getRandomPoints(numCustomers, minDistance, maxDistance);
     Matrix distanceMatrix = getDistanceMatrix(depots, customers);
 
+    /*
+    completeSolverClarkeWright and completeSolverGenetic are made for the python API
+    which is why they split up the locaiton Points into seperate vecs for x and y coords.
+
+    */
+
     std::vector<double> locations_x;
     std::vector<double> locations_y;
 
@@ -48,7 +54,7 @@ int main()
         true,
         exportFile);
 
-    /*std::vector<std::vector<std::vector<int>>> geneticSolution = completeSolverGenetic(
+    std::vector<std::vector<std::vector<int>>> geneticSolution = completeSolverGenetic(
         centerCoords,
         centerCoords,
         locations_x,
@@ -59,7 +65,7 @@ int main()
         mutationProb,
         true,
         StartingType::NearestNeighbours,
-        exportFile);*/
+        exportFile);
 
     std::vector<Point> locations(numDepots + numCustomers);
     std::copy(depots.begin(), depots.end(), locations.begin());
