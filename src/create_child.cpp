@@ -50,7 +50,7 @@ Individual routeCrossover(const Individual &parentA, const Individual &parentB, 
         std::vector<int> newRoute;
         for (int node : route)
         {
-            if (used.count(node) == 0)
+            if (node != 0 && used.count(node) == 0)
             {
                 newRoute.push_back(node);
                 used.insert(node);

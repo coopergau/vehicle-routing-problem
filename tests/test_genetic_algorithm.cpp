@@ -16,7 +16,7 @@ TEST_CASE("Fuzz test that geneticSolver returns a proper solution", "[geneticSol
     const double maxDistance = 500.0;
     const size_t numDepots = 1;
 
-    size_t fuzzRounds = 50;
+    size_t fuzzRounds = 200;
 
     size_t minCustomers = 5;
     size_t maxCustomers = 200;
@@ -94,7 +94,23 @@ TEST_CASE("Fuzz test that geneticSolver returns a proper solution", "[geneticSol
         }
 
         // Check that zero occurs nowhere else
-        REQUIRE(count[0] == finalRoutes.size() * 2);
+        if (count[0] != finalRoutes.size() * 2)
+        {
+            std::ostringstream oss;
+            oss << "Expected depot count: " << finalRoutes.size() * 2 << "\n";
+            oss << "Actual depot count: " << count[0] << "\n";
+            for (const auto &route : finalRoutes)
+            {
+                oss << "Route: ";
+                for (auto customer : route)
+                {
+                    oss << customer << " ";
+                }
+                oss << "\n";
+            }
+            INFO(oss.str());
+            REQUIRE(count[0] == finalRoutes.size() * 2);
+        }
 
         // Check that each route does not violate max length
         for (const auto &route : finalRoutes)

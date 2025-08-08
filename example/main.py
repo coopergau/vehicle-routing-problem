@@ -1,6 +1,7 @@
 #Example use in python
 import vrp_solver
 import random
+import matplotlib.pyplot as plt
     
 '''
 Valid starting types:
@@ -12,7 +13,7 @@ vrp_solver.StartingType.Mixed
 
 def main():
     file = "routes.csv"
-    num_customers = 80
+    num_customers = 50
     max_packages = 10
     population_size = 100
     generations = 1000
@@ -43,12 +44,14 @@ def main():
         generations,
         mutation_prob,
         True,
-        vrp_solver.StartingType.Random,
+        vrp_solver.StartingType.Mixed,
         file)'''
 
     locations = vrp_solver.get_locations(file)
     routes = vrp_solver.get_routes(file)
-    vrp_solver.plot_routes_animation(locations, routes, interval=100)
+    anim = vrp_solver.plot_routes_animation(locations, routes, interval=100)
+    # anim.save("geneticMixed.gif", writer='pillow', fps=10) # uncomment to save the animation as a gif
+    plt.show()
 
 if __name__ == "__main__":
     main()

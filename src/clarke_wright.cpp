@@ -48,7 +48,7 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
 {
     std::vector<std::vector<int>> routes;
     std::vector<std::vector<std::vector<int>>> routesProgress;
-    std::vector<bool> isEdgePoint(numCustomers, false);
+    std::vector<bool> isEdgePoint(numCustomers + 1, false);
     std::unordered_map<int, int> pointToRoute; // Maps a point index to its route index
 
     // 2.
@@ -168,14 +168,11 @@ processSavings(const std::vector<std::tuple<int, int, double>> &savings, const s
             }
 
             routes.erase(routes.begin() + routeIndexJ);
-            if (routeIndexJ < routes.size())
+            for (int row = routeIndexJ; row < routes.size(); row++)
             {
-                for (int row = routeIndexJ; row < routes.size(); row++)
+                for (int point : routes[row])
                 {
-                    for (int point : routes[row])
-                    {
-                        pointToRoute[point] = row;
-                    }
+                    pointToRoute[point] = row;
                 }
             }
 

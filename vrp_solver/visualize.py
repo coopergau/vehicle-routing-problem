@@ -84,4 +84,4 @@ def plot_routes_animation(locations, all_routes, interval=1000, end_intervals = 
     anim = animation.FuncAnimation(fig, animate, frames=frames_with_pause, 
                                  interval=interval, repeat=True)
     
-    plt.show()
+    return anim

@@ -7,8 +7,11 @@ Vehicle Routing Problem Solver
 - [Examples](#examples)
 
 ## Project Overview
-This project uses Python bindings to allow users to access C++ solvers for the vehicle routing problem.
+This project uses Python bindings to allow users to access C++ solvers for the vehicle routing problem. The vehicle routing problem is an NP-hard problem that is well known in the world of optimization and operations research. There are many variants but the version this project tackles is this: There is one depot location and multiple delivery locations. The goal is to find the shortest set of routes that visit each delivery location exaclty once and return to the depot. As if the routes are delivery trucks with limited capacity, each route has a maximum number of locations it can deliver to. 
 
+As the number of delivery locations increases, solving for an exact solution quickly becomes infeasible. For that reason, this project implements a heuristic solver (the Clarke-Wright algorithm) and a metaheuristic solver (a genetic algorithm). The Clarke-Wright algorithm provides a fast yet very efficient set of routes, based on calculating savings that would come from joining locations into the same route. The genetic algorithm creates a population of possible solutions and simulates evolution by combining routes from different parent solutions in an attempt to create better next generation. The genetic algorithm also allows for random mutations in an attempt to discover new optimal solutions.
+
+In practice, the genetic algorithm can result in a significant improvement when starting from a population of random solutions or the nearest neighbour solution. it consistently improves on the Clarke-Wright solution, but rarely by more than 2%.
 
 ## Requirements
 
@@ -81,7 +84,18 @@ This project uses Python bindings to allow users to access C++ solvers for the v
 
 ## Examples
 
-## To Do
- - readme description
- - gifs
- - finish readme and dbt descriptions for pipeline project
+### Clarke-Wright Algorithm Progress
+![Clarke-Wright Progress](example/clarkeWright.gif)
+
+### Genetic Algorithm Evolution 
+#### Starting from random
+![genetic random](example/geneticRand.gif.gif)
+
+#### Starting from nearest neighbours
+![genetic random](example/geneticNN.gif.gif)
+
+#### Starting from Clarke-Wright
+![genetic random](example/geneticCW.gif.gif)
+
+#### Starting from mixed
+![genetic random](example/geneticMized.gif.gif)

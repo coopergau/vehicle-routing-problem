@@ -16,7 +16,7 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clark
     const double maxDistance = 500.0;
     const size_t numDepots = 1;
 
-    size_t fuzzRounds = 50;
+    size_t fuzzRounds = 200;
 
     size_t minCustomers = 5;
     size_t maxCustomers = 200;
@@ -57,7 +57,9 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clark
             if (count[i] != 1)
             {
                 std::ostringstream oss;
-                oss << "count[i] is " << count[i];
+                oss << "numCustomers: " << numCustomers;
+                oss << "\n";
+                oss << "count[" << i << "] is " << count[i];
                 oss << "\n";
                 for (const auto &route : routes)
                 {
@@ -67,8 +69,8 @@ TEST_CASE("Fuzz test that clarkeWrightSolver returns a proper solution", "[clark
                 }
                 INFO("Routes:\n"
                      << oss.str());
+                REQUIRE(count[i] == 1);
             }
-            REQUIRE(count[i] == 1);
         }
 
         // Check that each route starts and ends with zero
