@@ -85,17 +85,17 @@ In practice, the genetic algorithm can result in a significant improvement when 
 ## Examples
 
 ### Clarke-Wright Algorithm Progress
-![Clarke-Wright Progress](example/clarkeWright.gif)
+<img src="example/clarkeWright.gif" width="500" alt="Clarke-Wright Progress">
 
 ### Genetic Algorithm Evolution 
 #### Starting from random
-![genetic random](example/geneticRand.gif.gif)
+<img src="example/geneticRand.gif" width="500" alt="Genetic Random">
 
 #### Starting from nearest neighbours
-![genetic random](example/geneticNN.gif.gif)
+<img src="example/geneticNN.gif" width="500" alt="Genetic Nearest Neighbors">
 
 #### Starting from Clarke-Wright
-![genetic random](example/geneticCW.gif.gif)
+<img src="example/geneticCW.gif" width="500" alt="Genetic Clarke-Wright">
 
 #### Starting from mixed
-![genetic random](example/geneticMized.gif.gif)
+<img src="example/geneticMixed.gif" width="500" alt="Genetic Mixed">
