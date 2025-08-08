@@ -2,7 +2,7 @@
 #define CLARKE_WRIGHT_H
 
 #include <vector>
-#include "utils.h"
+struct Matrix;
 
 std::pair<std::vector<std::vector<int>>, std::vector<std::vector<std::vector<int>>>>
 clarkeWrightSolver(const Matrix &distMatrix, const size_t maxPackages);

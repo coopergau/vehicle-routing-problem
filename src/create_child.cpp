@@ -1,14 +1,10 @@
 #include "create_child.h"
 #include "genetic_algo_utils.h"
-#include "utils.h"
 #include <vector>
-#include <set>
-
-#include <numeric>
 #include <algorithm>
 #include <random>
-#include <iostream>
 #include <unordered_set>
+struct Matrix;
 
 Individual createChild(const std::vector<Individual> &parents, const size_t maxPackages, const float mutationProb, const Matrix &distMatrix)
 {

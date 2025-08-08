@@ -2,7 +2,6 @@ Vehicle Routing Problem Solver
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Vehicle Routing Problem](#vehicle-routing-problem)
 - [Features](#features)
 - [Requirements](#requirements)
 - [How to Run](#how-to-run)
@@ -16,21 +15,9 @@ Vehicle Routing Problem Solver
 
 ## Requirements
 
-### Python API 
 - Python 3.x  
-
-### Raw C++ Code
-1. **OpenMP for parallel computing**
-    ```bash
-    sudo apt update
-    sudo apt install libomp-dev
-    ```
-
-2. **Catch2 for testing**
-    ```bash
-    sudo apt update
-    sudo apt install catch2
-    ```
+- OpenMP (for parellel computing)
+- Catch2 (for testing in c++)
 
 ## How to Run
 
@@ -101,12 +88,9 @@ Vehicle Routing Problem Solver
 
 ## To Do
 clean
- - make main look nice
  - maybe remove the inlcudes bc of the include stuff in the cmake
  - clean #includes and comments
- - camelcase filename in the bindings
  - check which cmake files in the root can be removed
- - maybe change repo name
  
  ## Benchmark Info
  using 

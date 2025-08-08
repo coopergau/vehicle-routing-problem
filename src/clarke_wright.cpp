@@ -1,6 +1,5 @@
 #include "clarke_wright.h"
 #include "utils.h"
-#include <iostream>
 #include <vector>
 #include <tuple>
 #include <algorithm>

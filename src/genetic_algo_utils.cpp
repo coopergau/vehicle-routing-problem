@@ -1,12 +1,10 @@
 #include "genetic_algo_utils.h"
-#include "create_child.h"
 #include "utils.h"
 #include "clarke_wright.h"
 #include <vector>
 #include <numeric>
 #include <algorithm>
 #include <random>
-#include <iostream>
 
 std::ostream &operator<<(std::ostream &os, const Individual &individual)
 {

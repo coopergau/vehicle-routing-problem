@@ -1,10 +1,7 @@
+#include "clarke_wright.h"
+#include "utils.h"
 #include <catch2/catch_test_macros.hpp>
 #include <random>
-
-#include "utils.h"
-#include "clarke_wright.h"
-
-#include <iostream>
 #include <sstream>
 
 /* Fuzz test checks that:

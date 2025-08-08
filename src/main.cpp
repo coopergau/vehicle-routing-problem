@@ -31,9 +31,9 @@ int main()
     Matrix distanceMatrix = getDistanceMatrix(depots, customers);
 
     /*
-    completeSolverClarkeWright and completeSolverGenetic are made for the python API
-    which is why they split up the locaiton Points into seperate vecs for x and y coords.
-
+    completeSolverClarkeWright and completeSolverGenetic are made for the python API which
+    is why they split up the location Points into seperate vecs for x and y coords.
+    For the most efficient solving in just C++ use clarkeWrightSolver and geneticSolver directly.
     */
 
     std::vector<double> locations_x;

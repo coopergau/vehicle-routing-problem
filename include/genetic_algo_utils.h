@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <ostream>
-#include "utils.h"
+struct Matrix;
 
 // Struct representing on set of routes with its fitness level (total distance)
 struct Individual

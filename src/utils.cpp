@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include <vector>
 #include <random>
 #include <cmath>
