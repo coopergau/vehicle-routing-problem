@@ -13,7 +13,7 @@ std::vector<std::vector<std::vector<int>>> completeSolverClarkeWright(
     const std::vector<double> &customers_y,
     const size_t maxPackages,
     const bool exportData,
-    const std::string &filename = "");
+    const std::string &fileName = "");
 
 std::vector<std::vector<std::vector<int>>> completeSolverGenetic(
     const double &depot_x,
@@ -26,6 +26,6 @@ std::vector<std::vector<std::vector<int>>> completeSolverGenetic(
     const float mutationProb,
     const bool exportData,
     const StartingType startingType = StartingType::ClarkeWright,
-    const std::string &filename = "");
+    const std::string &fileName = "");
 
 #endif

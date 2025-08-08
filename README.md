@@ -101,7 +101,6 @@ Vehicle Routing Problem Solver
 
 ## To Do
 clean
- - add the python part to a github workflow
  - make main look nice
  - maybe remove the inlcudes bc of the include stuff in the cmake
  - clean #includes and comments

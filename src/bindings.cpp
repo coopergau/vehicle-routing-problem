@@ -23,7 +23,7 @@ PYBIND11_MODULE(_vrp_core, m)
           py::arg("customers_y"),
           py::arg("maxPackages"),
           py::arg("exportData"),
-          py::arg("filename") = "");
+          py::arg("fileName") = "");
 
     m.def("completeSolverGenetic", &completeSolverGenetic,
           py::arg("depot_x"),
@@ -36,5 +36,5 @@ PYBIND11_MODULE(_vrp_core, m)
           py::arg("mutationProb"),
           py::arg("exportData"),
           py::arg("startingType") = StartingType::ClarkeWright,
-          py::arg("filename") = "");
+          py::arg("fileName") = "");
 }
