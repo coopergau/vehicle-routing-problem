@@ -13,7 +13,7 @@ This project uses Python bindings to allow users to access C++ solvers for the v
 
 As the number of delivery locations increases, solving for an exact solution quickly becomes infeasible. For that reason, this project implements a heuristic solver (the Clarke-Wright algorithm) and a metaheuristic solver (a genetic algorithm). The Clarke-Wright algorithm provides a fast and very efficient set of routes, based on calculating savings that would come from joining locations into the same route. The genetic algorithm creates a population of possible solutions and simulates evolution by combining routes from different parent solutions in an attempt to create more fit next generation. The genetic algorithm also allows for random mutations in an attempt to discover new optimal solutions.
 
-In practice, the genetic algorithm can result in a significant improvement when starting from a population of random solutions or the nearest neighbour solution (travelling to closest location until the maximum is reached for that route or all locations have been visited). The genetic algorithm also consistently improves on the Clarke-Wright solution, but rarely by more than 2%.
+In practice, the genetic algorithm can result in a significant improvement when starting from a population of random solutions or the nearest neighbour solution (travelling to closest location until the maximum number of locations is reached for that route or all locations have been visited). The genetic algorithm also consistently improves on the Clarke-Wright solution, but rarely by more than 2%.
 
 ## Clarke-Wright Algorithm Steps
 1. Pretend every location is in its own route.
